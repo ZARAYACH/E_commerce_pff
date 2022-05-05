@@ -1,10 +1,9 @@
-package com.Ecommerce.Order;
+package com.Ecommerce.CreditCard;
 
-import com.Ecommerce.Cart.Cart;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface OrderRepo extends JpaRepository<Orders,Long> {
+public interface CreditCardRepo extends JpaRepository<CreditCardService,Long> {
 
 }

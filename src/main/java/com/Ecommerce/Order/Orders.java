@@ -7,15 +7,17 @@ import lombok.Setter;
 
 import javax.persistence.*;
 
-@Entity
+@Entity(name="orders")
 @AllArgsConstructor
 @NoArgsConstructor
 @Setter
 @Getter
-public class Order {
+public class Orders {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
-    private Long id;
+    private int id;
+
 
 }

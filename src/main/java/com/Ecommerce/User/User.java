@@ -25,14 +25,14 @@ public class User {
 
     private String firstName;
     private String lastName;
-    @Column(name = "email",unique = true,nullable = false)
+    @Column(name = "email", unique = true, nullable = false)
     private String email;
     private String gender;
 
     @ManyToMany(fetch = FetchType.EAGER)
     private Collection<Role> roles = new ArrayList<>();
 
-    private LocalDate birthDate ;
+    private LocalDate birthDate;
     private boolean isActive;
     private String phoneNumber;
     private String img;
@@ -40,8 +40,7 @@ public class User {
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "userCrendials_id", referencedColumnName = "id")
-    private UserCredentials userCredentials ;
-
+    private UserCredentials userCredentials;
 
 
 }
