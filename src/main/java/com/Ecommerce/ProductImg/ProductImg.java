@@ -1,5 +1,6 @@
 package com.Ecommerce.ProductImg;
 
+import com.Ecommerce.Product.Product;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,4 +19,11 @@ public class ProductImg {
     @Column(name = "id", nullable = false)
     private Long id;
 
+    @Column
+    private String path;
+    @Column
+    private boolean isPrimaryImg;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    private Product product;
 }
