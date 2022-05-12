@@ -20,6 +20,6 @@ public interface UserRepo extends JpaRepository<User,Long> {
 
     @Query(value = "update user set is_active=true where id =:id",nativeQuery = true)
     void unSuspendUser(Long id);
-
-    boolean existsByEmail(String email);
+    @Query(value = "select u from user u where u.email = :email")
+    User existsByEmail(String email);
 }

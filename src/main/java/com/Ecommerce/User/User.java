@@ -1,12 +1,13 @@
 package com.Ecommerce.User;
 
-import com.Ecommerce.Role.Role;
-import com.Ecommerce.UserCredientiels.UserCredentials;
+import com.Ecommerce.Role.UserRoleAuth;
+import com.Ecommerce.UserCredentiels.UserCredentials;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.management.relation.Role;
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -29,8 +30,8 @@ public class User {
     private String email;
     private String gender;
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    private Collection<Role> roles = new ArrayList<>();
+    @ManyToMany(fetch = FetchType.LAZY)
+    private Collection<UserRoleAuth> roles = new ArrayList<>();
 
     private LocalDate birthDate;
     private boolean isActive;
@@ -38,7 +39,7 @@ public class User {
     private String img;
 
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     @JoinColumn(name = "userCrendials_id", referencedColumnName = "id")
     private UserCredentials userCredentials;
 

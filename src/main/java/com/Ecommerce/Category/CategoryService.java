@@ -1,4 +1,4 @@
-package com.Ecommerce.Categorie;
+package com.Ecommerce.Category;
 
 import lombok.AllArgsConstructor;
 import org.springframework.http.MediaType;

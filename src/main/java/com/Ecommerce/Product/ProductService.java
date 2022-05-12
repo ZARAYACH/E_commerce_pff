@@ -1,7 +1,7 @@
 package com.Ecommerce.Product;
 
-import com.Ecommerce.Categorie.Category;
-import com.Ecommerce.Categorie.CategorieRepo;
+import com.Ecommerce.Category.Category;
+import com.Ecommerce.Category.CategorieRepo;
 import com.Ecommerce.User.UserRepo;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -20,13 +20,14 @@ public class ProductService {
 
     private ProductRepo productRepo;
     private CategorieRepo categorieRepo;
+
     private UserRepo userRepo;
 
 
     public ResponseEntity<?> getProductBycategorie(String categorieName) {
         if (categorieRepo.existsByName(categorieName)) {
             Category category = categorieRepo.getCategorieByName(categorieName);
-            List<Product> products = productRepo.getProductsByCategorie(category);
+            List<Product> products = productRepo.getProductsByCategory(category);
             return ResponseEntity.ok().body(products);
         } else {
             return ResponseEntity.notFound().build();
