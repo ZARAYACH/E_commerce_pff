@@ -1,20 +1,31 @@
 package com.Ecommerce.User;
 
+import com.Ecommerce.Role.UserRoleAuth;
+import com.Ecommerce.Role.UserRoleAuthRepo;
+import com.Ecommerce.UserCredentiels.UserCredentials;
+import com.Ecommerce.UserCredentiels.UserCredentialsRepo;
+import com.Ecommerce.UserCredentiels.UserCredentialsService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.lang.reflect.Array;
+import java.time.LocalDate;
+import java.util.*;
 
 @Service
 @AllArgsConstructor
 public class UserService {
 
     private UserRepo userRepo;
+    private UserCredentialsService userCredService;
+    private UserCredentialsRepo userCredRepo;
+    private BCryptPasswordEncoder passwordEncoder;
+    private UserRoleAuthRepo userRoleAuthRepo;
 
     public ResponseEntity<?> getUserInfo(Authentication authentication) {
         String email = authentication.getPrincipal().toString();
@@ -100,15 +111,15 @@ public class UserService {
     public ResponseEntity<?> unSuspendUser(Authentication authentication, User userTemp) {
         String email = authentication.getPrincipal().toString();
         User admin = userRepo.getUserByEmail(email);
-        User user  = userRepo.getById(userTemp.getId());
-        if (user.isActive()==true){
+        User user = userRepo.getById(userTemp.getId());
+        if (user.isActive() == true) {
             userRepo.unSuspendUser(user.getId());
             Map<String, String> succes = new HashMap<>();
-            succes.put("success", "the user :"+user.getEmail()+"is activated with success");
+            succes.put("success", "the user :" + user.getEmail() + "is activated with success");
             return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(succes);
-        }else {
+        } else {
             Map<String, String> error = new HashMap<>();
-            error.put("error", "user"+user.getEmail()+"already active");
+            error.put("error", "user" + user.getEmail() + "already active");
             return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(error);
         }
 
@@ -118,27 +129,68 @@ public class UserService {
     public ResponseEntity<?> deleteUser(Authentication authentication, User toBeDel) {
         String email = authentication.getPrincipal().toString();
         User admin = userRepo.getUserByEmail(email);
-        if (userRepo.existsById(toBeDel.getId())){
+        if (userRepo.existsById(toBeDel.getId())) {
             userRepo.delete(toBeDel);
-        }else{
+        } else {
             Map<String, String> error = new HashMap<>();
-            error.put("error", "user"+toBeDel.getEmail()+"doesn't exist");
+            error.put("error", "user" + toBeDel.getEmail() + "doesn't exist");
             return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(error);
         }
-        if (userRepo.existsById(toBeDel.getId())){
+        if (userRepo.existsById(toBeDel.getId())) {
             Map<String, String> error = new HashMap<>();
             error.put("error", "something went wrong");
             return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(error);
-        }else{
+        } else {
             Map<String, String> success = new HashMap<>();
             success.put("success", "the user :" + toBeDel.getEmail() + "was deleted with success");
-            return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(success);
+            return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(success);
         }
     }
+
     //TODO:to be compeleted later on
-//    public ResponseEntity<?> UserSignUp(User user) {
-//        if (!userRepo.existsByEmail(user.getEmail())){
-//            /
-//        }
-//    }
+    public ResponseEntity<?> UserSignUp(User user) {
+        System.out.printf(user.getEmail());
+        if (!userRepo.existsByEmail(user.getEmail())) {
+            if (user.getBirthDate().getYear() < LocalDate.now().getYear()) {
+                if (!userRepo.existsByPhoneNumber(user.getPhoneNumber())) {
+                    if (user.getUserCredentials() != null) {
+                        if (userCredService.cheekStrongestOfPassword(user.getUserCredentials().getPassword())) {
+                            String encodedPass =  passwordEncoder.encode(user.getUserCredentials().getPassword());
+                            user.getUserCredentials().setEmail(user.getEmail());
+                            user.getUserCredentials().setPassword(encodedPass);
+                            user.setActive(true);
+                            user.setRoles(userRoleAuthRepo.getUserRoleAuthByName(String.valueOf(UserRoles.USER)));
+                            UserCredentials userCredentials = userCredRepo.save(user.getUserCredentials());
+                            user.setUserCredentials(userCredentials);
+                            userRepo.save(user);
+
+                            Map<String, String> success = new HashMap<>();
+                            success.put("success", "the user with Email  :" +user.getEmail()+ "is successfully signed in");
+                            return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(success);
+
+                        }
+                    }else {
+                        Map<String, String> error = new HashMap<>();
+                        error.put("error", "please add a credientiel");
+                        return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(error);
+                    }
+
+                }else {
+                    Map<String, String> error = new HashMap<>();
+                    error.put("error", "this phone number is already exists");
+                    return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(error);
+                }
+            }else {
+                Map<String, String> error = new HashMap<>();
+                error.put("error", "invalid birth date");
+                return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(error);
+            }
+
+        }else {
+            Map<String, String> error = new HashMap<>();
+            error.put("error", "this email is already exists");
+            return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(error);
+        }
+        return null;
+    }
 }

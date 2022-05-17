@@ -1,10 +1,8 @@
 package com.Ecommerce.User;
 
-import com.Ecommerce.Cart.Cart;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.http.ResponseEntity;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -21,5 +19,7 @@ public interface UserRepo extends JpaRepository<User,Long> {
     @Query(value = "update user set is_active=true where id =:id",nativeQuery = true)
     void unSuspendUser(Long id);
     @Query(value = "select u from user u where u.email = :email")
-    User existsByEmail(String email);
+    boolean existsByEmail(@Param("email") String email);
+    @Query(value = "select u from user u where  u.phoneNumber=:phoneNumber")
+    boolean existsByPhoneNumber(@Param("phoneNumber") String phoneNumber);
 }

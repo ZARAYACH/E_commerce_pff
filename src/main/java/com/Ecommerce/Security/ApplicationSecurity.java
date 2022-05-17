@@ -39,10 +39,10 @@ public class ApplicationSecurity extends WebSecurityConfigurerAdapter {
                 .addFilter(new CustomAuthenticationFilter(authenticationManager()))
                 .addFilterBefore(new CustomAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class)
                 .authorizeRequests()
-                .antMatchers("/login").permitAll()
+                .antMatchers("/api/v1/user/signup").permitAll()
                 .antMatchers("/api/v1/token/refresh").permitAll()
-                .antMatchers("/api/v1/supervisor/**").hasRole("SUPERVISOR")
-                .antMatchers("/api/v1/employee/**").hasRole("EMPLOYEE")
+                .antMatchers("/api/v1/admin/**").hasRole("ADMIN")
+                .antMatchers("/api/v1/user/**").hasRole("USER")
                 .anyRequest().authenticated();
     }
 

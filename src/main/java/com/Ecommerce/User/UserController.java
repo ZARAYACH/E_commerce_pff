@@ -12,6 +12,12 @@ public class UserController {
 
     private UserService userService;
 
+
+    @PostMapping(path = "/user/signup")
+    private ResponseEntity<?> UserSignUp(@RequestBody User user){
+        return userService.UserSignUp(user);
+    }
+
     //user methods
     @GetMapping(path = "/user/info")
     public ResponseEntity<?> getUserInfo(Authentication authentication){

@@ -1,6 +1,7 @@
 package com.Ecommerce.UserCredentiels;
 
 import lombok.AllArgsConstructor;
+import lombok.NonNull;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -27,8 +28,7 @@ public class UserCredentialsService implements UserDetailsService {
     }
 
 
-    public boolean cheekStrongestOfPassword(UserCredentials userCredentials){
-        String password = userCredentials.getPassword();
+    public boolean cheekStrongestOfPassword(@NonNull String password){
         String regex = "^(?=.*[0-9])"
                 + "(?=.*[a-z])(?=.*[A-Z])"
                 + "(?=.*[@#$%^&+=])"
