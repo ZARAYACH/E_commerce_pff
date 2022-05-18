@@ -28,11 +28,12 @@ public class UserCredentialsService implements UserDetailsService {
     }
 
 
-    public boolean cheekStrongestOfPassword(@NonNull String password){
+    public boolean cheekStrongestOfPassword(UserCredentials userCredentials){
+        String password = userCredentials.getPassword();
         String regex = "^(?=.*[0-9])"
                 + "(?=.*[a-z])(?=.*[A-Z])"
                 + "(?=.*[@#$%^&+=])"
-                + "(?=\\S+$).{8,20}$";
+                + "(?=\\S+$).{8,50}$";
         Pattern p = Pattern.compile(regex);
         Matcher m = p.matcher(password);
         return m.matches();

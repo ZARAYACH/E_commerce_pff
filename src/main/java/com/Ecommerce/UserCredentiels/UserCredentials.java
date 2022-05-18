@@ -3,6 +3,8 @@ package com.Ecommerce.UserCredentiels;
 import com.Ecommerce.User.User;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -37,7 +39,8 @@ public class UserCredentials implements UserDetails {
     private String verficationToken;
 
     @JsonBackReference
-    @OneToOne(mappedBy = "userCredentials")
+    @OneToOne(mappedBy = "userCredentials",cascade = CascadeType.ALL)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private User user;
 
 

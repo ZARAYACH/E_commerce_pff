@@ -1,5 +1,6 @@
 package com.Ecommerce.User;
 
+import com.Ecommerce.MailSender.JavaEmailSenderService;
 import com.Ecommerce.Role.UserRoleAuth;
 import com.Ecommerce.Role.UserRoleAuthRepo;
 import com.Ecommerce.UserCredentiels.UserCredentials;
@@ -26,6 +27,8 @@ public class UserService {
     private UserCredentialsRepo userCredRepo;
     private BCryptPasswordEncoder passwordEncoder;
     private UserRoleAuthRepo userRoleAuthRepo;
+
+    private JavaEmailSenderService mailSender;
 
     public ResponseEntity<?> getUserInfo(Authentication authentication) {
         String email = authentication.getPrincipal().toString();
@@ -150,24 +153,36 @@ public class UserService {
     //TODO:to be compeleted later on
     public ResponseEntity<?> UserSignUp(User user) {
         System.out.printf(user.getEmail());
-        if (!userRepo.existsByEmail(user.getEmail())) {
-            if (user.getBirthDate().getYear() < LocalDate.now().getYear()) {
-                if (!userRepo.existsByPhoneNumber(user.getPhoneNumber())) {
+        if (userRepo.existsByEmail(user.getEmail())==null) {
+            if (user.getBirthDate().getYear() < LocalDate.now().getYear() || user.getBirthDate() != null) {
+                if (userRepo.existsByPhoneNumber(user.getPhoneNumber())==null) {
                     if (user.getUserCredentials() != null) {
-                        if (userCredService.cheekStrongestOfPassword(user.getUserCredentials().getPassword())) {
+                        if (userCredService.cheekStrongestOfPassword(user.getUserCredentials())) {
                             String encodedPass =  passwordEncoder.encode(user.getUserCredentials().getPassword());
                             user.getUserCredentials().setEmail(user.getEmail());
                             user.getUserCredentials().setPassword(encodedPass);
                             user.setActive(true);
+                            user.getUserCredentials().setActive(false);
                             user.setRoles(userRoleAuthRepo.getUserRoleAuthByName(String.valueOf(UserRoles.USER)));
                             UserCredentials userCredentials = userCredRepo.save(user.getUserCredentials());
                             user.setUserCredentials(userCredentials);
                             userRepo.save(user);
+                            String link = "http://localhost:8080/api/v1/verifyAccount?token="+user.getUserCredentials().getVerficationToken()+"email="+user.getEmail();
+
+                            mailSender.SendHtmlEmail(user.getEmail(),
+                                    "medrassachanuwu@gmail.com",
+                                    "please verified your account ",
+                                    "<h1>verified your cprofile management profile</h1" +
+                                            "<p>Please click <a href="+link+">HERE</a>to verified " + " your account </p>");
 
                             Map<String, String> success = new HashMap<>();
-                            success.put("success", "the user with Email  :" +user.getEmail()+ "is successfully signed in");
+                            success.put("success", "the user with Email  :" +user.getEmail()+ " is successfully signed in");
                             return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(success);
 
+                        }else {
+                            Map<String, String> error = new HashMap<>();
+                            error.put("error", "the provided password should contain a number and lower and uper case letter and a charachter and tength betewenn 8 and 50");
+                            return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(error);
                         }
                     }else {
                         Map<String, String> error = new HashMap<>();
@@ -191,6 +206,5 @@ public class UserService {
             error.put("error", "this email is already exists");
             return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(error);
         }
-        return null;
     }
 }

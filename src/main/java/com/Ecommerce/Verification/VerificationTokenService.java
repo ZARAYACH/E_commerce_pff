@@ -26,7 +26,7 @@ public class VerificationTokenService {
     }
 
     public ResponseEntity<?> verifyAnAccount(String token, String email) {
-        if (userRepo.existsByEmail(email)) {
+        if (userRepo.   existsByEmail(email)!=null) {
             User user = userRepo.getUserByEmail(email);
             if (!user.isActive()) {
                 String verificationToken = user.getUserCredentials().getVerficationToken();
@@ -43,7 +43,7 @@ public class VerificationTokenService {
     }
 
     public ResponseEntity<?> ResendTheToken(String email) {
-        if (userRepo.existsByEmail(email)) {
+        if (userRepo.existsByEmail(email)!=null) {
             User user = userRepo.getUserByEmail(email);
             if (!user.isActive()) {
                 user.getUserCredentials().setVerficationToken(generateVerificationToken());

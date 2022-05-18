@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.management.relation.Role;
 import javax.persistence.*;
@@ -40,6 +42,7 @@ public class User {
 
 
     @OneToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "userCrendials_id", referencedColumnName = "id")
     private UserCredentials userCredentials;
 
