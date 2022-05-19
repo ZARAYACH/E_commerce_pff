@@ -14,7 +14,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.lang.reflect.Array;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -32,7 +31,7 @@ public class UserService {
 
     public ResponseEntity<?> getUserInfo(Authentication authentication) {
         String email = authentication.getPrincipal().toString();
-        User user = userRepo.getUserByEmail(email);
+        User user = userRepo.findUserByEmail(email);
         if (user != null) {
             return ResponseEntity.ok().body(user);
         } else {
@@ -42,7 +41,7 @@ public class UserService {
 
     public ResponseEntity<?> changeUserInfo(Authentication authentication, User newUser) {
         String email = authentication.getPrincipal().toString();
-        User oldUser = userRepo.getUserByEmail(email);
+        User oldUser = userRepo.findUserByEmail(email);
         newUser.setId(oldUser.getId());
         if (newUser.getBirthDate() != null) {
             oldUser.setBirthDate(newUser.getBirthDate());
@@ -74,7 +73,7 @@ public class UserService {
 
     public ResponseEntity<?> deleteAccount(Authentication authentication) {
         String email = authentication.getPrincipal().toString();
-        User user = userRepo.getUserByEmail(email);
+        User user = userRepo.findUserByEmail(email);
         userRepo.delete(user);
         if (!userRepo.existsById(user.getId())) {
             return ResponseEntity.ok().body(user);
@@ -87,7 +86,7 @@ public class UserService {
 
     public ResponseEntity<?> getUsers(Authentication authentication) {
         String email = authentication.getPrincipal().toString();
-        User admin = userRepo.getUserByEmail(email);
+        User admin = userRepo.findUserByEmail(email);
         if (admin.getRoles().contains("admin")) {
             return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(userRepo.getAllUsers());
         } else {
@@ -97,7 +96,7 @@ public class UserService {
 
     public ResponseEntity<?> suspendUser(Authentication authentication, User userTemp) {
         String email = authentication.getPrincipal().toString();
-        User admin = userRepo.getUserByEmail(email);
+        User admin = userRepo.findUserByEmail(email);
         User user = userRepo.getById(userTemp.getId());
         if (user.isActive() == true) {
             userRepo.suspendUser(user.getId());
@@ -113,7 +112,7 @@ public class UserService {
 
     public ResponseEntity<?> unSuspendUser(Authentication authentication, User userTemp) {
         String email = authentication.getPrincipal().toString();
-        User admin = userRepo.getUserByEmail(email);
+        User admin = userRepo.findUserByEmail(email);
         User user = userRepo.getById(userTemp.getId());
         if (user.isActive() == true) {
             userRepo.unSuspendUser(user.getId());
@@ -131,7 +130,7 @@ public class UserService {
 
     public ResponseEntity<?> deleteUser(Authentication authentication, User toBeDel) {
         String email = authentication.getPrincipal().toString();
-        User admin = userRepo.getUserByEmail(email);
+        User admin = userRepo.findUserByEmail(email);
         if (userRepo.existsById(toBeDel.getId())) {
             userRepo.delete(toBeDel);
         } else {
@@ -161,23 +160,26 @@ public class UserService {
                             String encodedPass =  passwordEncoder.encode(user.getUserCredentials().getPassword());
                             user.getUserCredentials().setEmail(user.getEmail());
                             user.getUserCredentials().setPassword(encodedPass);
-                            user.setActive(true);
+                            Collection<UserRoleAuth> DD = userRoleAuthRepo.getUserRoleAuthByName("CUSTOMER");
+                            user.setRoles(userRoleAuthRepo.getUserRoleAuthByName("CUSTOMER"));
+                            user.setActive(false);
                             user.getUserCredentials().setActive(false);
-                            user.setRoles(userRoleAuthRepo.getUserRoleAuthByName(String.valueOf(UserRoles.USER)));
+                            user.setRoles(userRoleAuthRepo.getUserRoleAuthByName(String.valueOf(UserRoles.CUSTOMER)));
                             UserCredentials userCredentials = userCredRepo.save(user.getUserCredentials());
                             user.setUserCredentials(userCredentials);
+                            user.getUserCredentials().setVerficationToken(UUID.randomUUID().toString());
                             userRepo.save(user);
-                            String link = "http://localhost:8080/api/v1/verifyAccount?token="+user.getUserCredentials().getVerficationToken()+"email="+user.getEmail();
+                            String link = "http://localhost:8081/api/v1/verifyAccount?token="+user.getUserCredentials().getVerficationToken()+"&email="+user.getEmail();
 
                             mailSender.SendHtmlEmail(user.getEmail(),
                                     "medrassachanuwu@gmail.com",
-                                    "please verified your account ",
+                                    "verified your account",
                                     "<h1>verified your cprofile management profile</h1" +
                                             "<p>Please click <a href="+link+">HERE</a>to verified " + " your account </p>");
 
                             Map<String, String> success = new HashMap<>();
                             success.put("success", "the user with Email  :" +user.getEmail()+ " is successfully signed in");
-                            return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(success);
+                            return ResponseEntity.status(HttpStatus.CREATED).contentType(MediaType.APPLICATION_JSON).body(success);
 
                         }else {
                             Map<String, String> error = new HashMap<>();

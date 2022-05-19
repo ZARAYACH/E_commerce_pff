@@ -32,7 +32,8 @@ public class User {
     private String email;
     private String gender;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.EAGER)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Collection<UserRoleAuth> roles = new ArrayList<>();
 
     private LocalDate birthDate;

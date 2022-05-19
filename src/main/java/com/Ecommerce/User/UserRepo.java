@@ -9,7 +9,8 @@ import java.util.List;
 @Repository
 public interface UserRepo extends JpaRepository<User,Long> {
 
-    User getUserByEmail(String email);
+    @Query("select u from user u where u.email=:email")
+    User findUserByEmail(@Param("email") String email);
     @Query(value = "select * from user",nativeQuery = true)
     List<User> getAllUsers();
 

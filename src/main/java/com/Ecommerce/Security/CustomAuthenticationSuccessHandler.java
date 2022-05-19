@@ -15,7 +15,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.time.LocalDateTime;
 
 @Component
 @AllArgsConstructor
@@ -26,7 +25,7 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
-        User user = userRepo.getUserByEmail(authentication.getName());
+        User user = userRepo.findUserByEmail(authentication.getName());
         var details = (WebAuthenticationDetails)authentication.getDetails();
         request.getSession().setAttribute("user",user);
         Logs log = new Logs();//TODO :fix this logs
