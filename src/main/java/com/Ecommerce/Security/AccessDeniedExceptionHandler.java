@@ -17,8 +17,5 @@ public class AccessDeniedExceptionHandler implements AccessDeniedHandler {
     @Override
     public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException, ServletException {
         response.sendError(HttpServletResponse.SC_UNAUTHORIZED,accessDeniedException.getMessage());
-        System.out.println(request.getUserPrincipal());
-        System.out.println(request.isUserInRole(String.valueOf(UserRoles.CUSTOMER)));
-        System.out.println(accessDeniedException.getCause());
     }
 }

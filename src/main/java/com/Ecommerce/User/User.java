@@ -15,6 +15,8 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import static javax.persistence.FetchType.*;
+
 @Entity(name = "user")
 @NoArgsConstructor
 @AllArgsConstructor
@@ -32,7 +34,7 @@ public class User {
     private String email;
     private String gender;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = EAGER)
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Collection<UserRoleAuth> roles = new ArrayList<>();
 
@@ -42,7 +44,7 @@ public class User {
     private String img;
 
 
-    @OneToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    @OneToOne(cascade = CascadeType.ALL,fetch = LAZY)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "userCrendials_id", referencedColumnName = "id")
     private UserCredentials userCredentials;

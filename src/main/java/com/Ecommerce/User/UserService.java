@@ -32,6 +32,7 @@ public class UserService {
     public ResponseEntity<?> getUserInfo(Authentication authentication) {
         String email = authentication.getPrincipal().toString();
         User user = userRepo.findUserByEmail(email);
+        user.setUserCredentials(null);
         if (user != null) {
             return ResponseEntity.ok().body(user);
         } else {
@@ -74,14 +75,19 @@ public class UserService {
     public ResponseEntity<?> deleteAccount(Authentication authentication) {
         String email = authentication.getPrincipal().toString();
         User user = userRepo.findUserByEmail(email);
-        userRepo.delete(user);
-        if (!userRepo.existsById(user.getId())) {
-            return ResponseEntity.ok().body(user);
-        } else {
-            Map<String, String> error = new HashMap<>();
-            error.put("error", "something went wrong please repeat later");
-            return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(error);
+        if (user != null){
+            userRepo.delete(user);
+            if (!userRepo.existsById(user.getId())) {
+                return ResponseEntity.ok().body(user);
+            } else {
+                Map<String, String> error = new HashMap<>();
+                error.put("error", "something went wrong please repeat later");
+                return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(error);
+            }
+        }else {
+            return ResponseEntity.notFound().build();
         }
+
     }
 
     public ResponseEntity<?> getUsers(Authentication authentication) {
