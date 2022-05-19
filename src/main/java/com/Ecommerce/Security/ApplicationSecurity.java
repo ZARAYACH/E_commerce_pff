@@ -44,7 +44,7 @@ public class ApplicationSecurity extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/v1/token/refresh").permitAll()
                 .antMatchers("/api/v1/verifyAccount").permitAll()
                 .antMatchers("/api/v1/user/**").hasAnyAuthority("CUSTOMER","ADMIN")
-                .antMatchers("/api/v1/admin/**").hasRole("ADMIN")
+                .antMatchers("/api/v1/admin/**").hasAuthority("ADMIN")
                 .anyRequest().authenticated();
     }
 

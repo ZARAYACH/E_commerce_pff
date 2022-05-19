@@ -93,11 +93,12 @@ public class UserService {
     public ResponseEntity<?> getUsers(Authentication authentication) {
         String email = authentication.getPrincipal().toString();
         User admin = userRepo.findUserByEmail(email);
-        if (admin.getRoles().contains("admin")) {
+        if (admin != null){
             return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(userRepo.getAllUsers());
-        } else {
-            return ResponseEntity.badRequest().build();
+        }else {
+            return ResponseEntity.notFound().build();
         }
+
     }
 
     public ResponseEntity<?> suspendUser(Authentication authentication, User userTemp) {
