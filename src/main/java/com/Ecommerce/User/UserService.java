@@ -135,10 +135,7 @@ public class UserService {
             return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(success);
         }
     }
+
+
+    }
     //TODO:to be compeleted later on
-//    public ResponseEntity<?> UserSignUp(User user) {
-//        if (!userRepo.existsByEmail(user.getEmail())){
-//            /
-//        }
-//    }
-}

@@ -25,10 +25,6 @@ public class UserController {
     public ResponseEntity<?> deleteAccount(Authentication authentication){
         return userService.deleteAccount(authentication);
     }
-//    @PostMapping(path = "/signUp")
-//    public ResponseEntity<?> userSignUp(User user){
-////        return userService.UserSignUp(user);
-//    }
 
     //Admin methods
 
