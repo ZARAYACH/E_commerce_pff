@@ -6,6 +6,8 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -35,7 +37,7 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
             String authorizationHeader = request.getHeader(AUTHORIZATION);
             if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")){
                 try {
-                    String token = authorizationHeader.substring("bearer ".length());
+                    String token = authorizationHeader.substring("Bearer ".length());
                     Algorithm algorithmAccess = Algorithm.HMAC256("secretsecretsecretsecretsecretsecretsecret".getBytes(StandardCharsets.UTF_8));
                     JWTVerifier verifier = JWT.require(algorithmAccess).build();
                     DecodedJWT decodedJWT = verifier.verify(token);
@@ -50,13 +52,12 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
                     filterChain.doFilter(request,response);
                 }catch (Exception e){
                     System.out.println("there");
-                    response.setStatus(FORBIDDEN.value());
+                    response.setStatus(498);
                     response.setContentType(APPLICATION_JSON_VALUE);
                     HashMap<String,String> error = new HashMap<>();
-                    error.put("error",e.getMessage().toString());
+                    error.put("tokenProblem",e.getMessage().toString());
                     System.out.println(e.getMessage().toString());
-                    new ObjectMapper().writeValue(response.getOutputStream(),error.toString());
-                    e.printStackTrace();
+                    new ObjectMapper().writeValue(response.getOutputStream(),error);
                 }
             }else {
                 filterChain.doFilter(request,response);

@@ -1,5 +1,7 @@
 package com.Ecommerce.Security;
 
+import com.Ecommerce.User.User;
+import com.Ecommerce.User.UserRoles;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.stereotype.Component;

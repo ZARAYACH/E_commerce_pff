@@ -1,17 +1,22 @@
 package com.Ecommerce.User;
 
+import com.Ecommerce.Cart.Cart;
 import com.Ecommerce.Role.UserRoleAuth;
 import com.Ecommerce.UserCredentiels.UserCredentials;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.management.relation.Role;
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
+
+import static javax.persistence.FetchType.*;
 
 @Entity(name = "user")
 @NoArgsConstructor
@@ -30,7 +35,8 @@ public class User {
     private String email;
     private String gender;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = EAGER)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Collection<UserRoleAuth> roles = new ArrayList<>();
 
     private LocalDate birthDate;
@@ -39,9 +45,11 @@ public class User {
     private String img;
 
 
-    @OneToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    @OneToOne(cascade = CascadeType.REMOVE,fetch = EAGER)
     @JoinColumn(name = "userCrendials_id", referencedColumnName = "id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private UserCredentials userCredentials;
 
-
+    @OneToOne(mappedBy = "user",fetch = LAZY)
+    private Cart cart;
 }

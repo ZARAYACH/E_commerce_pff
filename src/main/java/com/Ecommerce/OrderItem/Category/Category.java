@@ -1,4 +1,4 @@
-package com.Ecommerce.Category;
+package com.Ecommerce.OrderItem.Category;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -12,6 +12,12 @@ public class UserController {
 
     private UserService userService;
 
+
+    @PostMapping(path = "/user/signup")
+    private ResponseEntity<?> UserSignUp(@RequestBody User user){
+        return userService.UserSignUp(user);
+    }
+
     //user methods
     @GetMapping(path = "/user/info")
     public ResponseEntity<?> getUserInfo(Authentication authentication){
@@ -41,7 +47,7 @@ public class UserController {
         return userService.unSuspendUser(authentication,user);
     }
     @DeleteMapping(path = "/admin/deleteUser")
-    public ResponseEntity<?> deleteUser(Authentication authentication,User toBeDel){
+    public ResponseEntity<?> deleteUser(Authentication authentication,@RequestBody User toBeDel){
         return userService.deleteUser(authentication,toBeDel);
     }
 }

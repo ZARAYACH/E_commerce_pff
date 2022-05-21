@@ -1,9 +1,14 @@
 package com.Ecommerce.Cart;
 
 
+import com.Ecommerce.CartItem.CartItem;
+import com.Ecommerce.User.User;
 import lombok.*;
 
 import javax.persistence.*;
+
+import java.util.List;
+import java.util.Set;
 
 import static javax.persistence.GenerationType.*;
 
@@ -18,6 +23,13 @@ public class Cart {
     @Column(name = "id", nullable = false)
     private Long id;
 
+    private Float priceOfAllItems;
+
+    @OneToMany(mappedBy = "cart")
+    private Set<CartItem> cartItems;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    private User user;
 
 
 

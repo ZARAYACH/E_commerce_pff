@@ -3,6 +3,7 @@ package com.Ecommerce.Security;
 
 import com.Ecommerce.Jwts.CustomAuthenticationFilter;
 import com.Ecommerce.Jwts.CustomAuthorizationFilter;
+import com.Ecommerce.User.UserRoles;
 import com.Ecommerce.UserCredentiels.UserCredentialsService;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Configuration;
@@ -39,10 +40,11 @@ public class ApplicationSecurity extends WebSecurityConfigurerAdapter {
                 .addFilter(new CustomAuthenticationFilter(authenticationManager()))
                 .addFilterBefore(new CustomAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class)
                 .authorizeRequests()
-                .antMatchers("/login").permitAll()
+                .antMatchers("/api/v1/user/signup").permitAll()
                 .antMatchers("/api/v1/token/refresh").permitAll()
-                .antMatchers("/api/v1/supervisor/**").hasRole("SUPERVISOR")
-                .antMatchers("/api/v1/employee/**").hasRole("EMPLOYEE")
+                .antMatchers("/api/v1/verifyAccount").permitAll()
+                .antMatchers("/api/v1/user/**").hasAnyAuthority("CUSTOMER","ADMIN")
+                .antMatchers("/api/v1/admin/**").hasAuthority("ADMIN")
                 .anyRequest().authenticated();
     }
 

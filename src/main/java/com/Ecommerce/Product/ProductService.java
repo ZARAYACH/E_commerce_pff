@@ -1,7 +1,7 @@
 package com.Ecommerce.Product;
 
-import com.Ecommerce.Category.Category;
-import com.Ecommerce.Category.CategorieRepo;
+import com.Ecommerce.OrderItem.Category.Category;
+import com.Ecommerce.OrderItem.Category.CategorieRepo;
 import com.Ecommerce.User.UserRepo;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
