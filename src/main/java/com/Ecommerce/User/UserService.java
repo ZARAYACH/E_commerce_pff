@@ -1,7 +1,6 @@
 package com.Ecommerce.User;
 
 import com.Ecommerce.MailSender.JavaEmailSenderService;
-import com.Ecommerce.Role.UserRoleAuth;
 import com.Ecommerce.Role.UserRoleAuthRepo;
 import com.Ecommerce.UserCredentiels.UserCredentials;
 import com.Ecommerce.UserCredentiels.UserCredentialsRepo;
@@ -105,7 +104,7 @@ public class UserService {
         String email = authentication.getPrincipal().toString();
         User admin = userRepo.findUserByEmail(email);
         User user = userRepo.getById(userTemp.getId());
-        if (user.isActive() == true) {
+        if (user.isActive()) {
             userRepo.suspendUser(user.getId());
             Map<String, String> succes = new HashMap<>();
             succes.put("success", "the user :" + user.getEmail() + "is suspended with success");
@@ -139,10 +138,11 @@ public class UserService {
         String email = authentication.getPrincipal().toString();
         User admin = userRepo.findUserByEmail(email);
         if (userRepo.existsById(toBeDel.getId())) {
-            userRepo.delete(toBeDel);
+            User toBeDelete = userRepo.getById(toBeDel.getId());
+            userRepo.delete(toBeDelete);
         } else {
             Map<String, String> error = new HashMap<>();
-            error.put("error", "user" + toBeDel.getEmail() + "doesn't exist");
+            error.put("error", "user" + toBeDel.getId()+ "doesn't exist");
             return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(error);
         }
         if (userRepo.existsById(toBeDel.getId())) {
@@ -151,7 +151,7 @@ public class UserService {
             return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(error);
         } else {
             Map<String, String> success = new HashMap<>();
-            success.put("success", "the user :" + toBeDel.getEmail() + "was deleted with success");
+            success.put("success", "the user with id ="+ toBeDel.getId() +" was deleted with success");
             return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(success);
         }
     }
@@ -167,8 +167,6 @@ public class UserService {
                             String encodedPass =  passwordEncoder.encode(user.getUserCredentials().getPassword());
                             user.getUserCredentials().setEmail(user.getEmail());
                             user.getUserCredentials().setPassword(encodedPass);
-                            Collection<UserRoleAuth> DD = userRoleAuthRepo.getUserRoleAuthByName("CUSTOMER");
-                            user.setRoles(userRoleAuthRepo.getUserRoleAuthByName("CUSTOMER"));
                             user.setActive(false);
                             user.getUserCredentials().setActive(false);
                             user.setRoles(userRoleAuthRepo.getUserRoleAuthByName(String.valueOf(UserRoles.CUSTOMER)));
@@ -185,7 +183,7 @@ public class UserService {
                                             "<p>Please click <a href="+link+">HERE</a>to verified " + " your account </p>");
 
                             Map<String, String> success = new HashMap<>();
-                            success.put("success", "the user with Email  :" +user.getEmail()+ " is successfully signed in");
+                            success.put("success", "the user with Email  :" +user.getEmail()+ " is successfully signed up");
                             return ResponseEntity.status(HttpStatus.CREATED).contentType(MediaType.APPLICATION_JSON).body(success);
 
                         }else {

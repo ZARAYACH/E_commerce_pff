@@ -40,7 +40,6 @@ public class UserCredentials implements UserDetails {
 
     @JsonBackReference
     @OneToOne(mappedBy = "userCredentials",cascade = CascadeType.ALL)
-    @OnDelete(action = OnDeleteAction.CASCADE)
     private User user;
 
 
@@ -56,7 +55,6 @@ public class UserCredentials implements UserDetails {
         Collection<SimpleGrantedAuthority> authority = new ArrayList<>();
         user.getRoles().forEach(role->
                 authority.add(new SimpleGrantedAuthority(role.getName())));
-        System.out.println(authority.toString());
         return authority;
     }
 

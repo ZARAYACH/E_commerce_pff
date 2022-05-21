@@ -1,5 +1,6 @@
 package com.Ecommerce.User;
 
+import com.Ecommerce.Cart.Cart;
 import com.Ecommerce.Role.UserRoleAuth;
 import com.Ecommerce.UserCredentiels.UserCredentials;
 import lombok.AllArgsConstructor;
@@ -44,10 +45,11 @@ public class User {
     private String img;
 
 
-    @OneToOne(cascade = CascadeType.ALL,fetch = LAZY)
-    @OnDelete(action = OnDeleteAction.CASCADE)
+    @OneToOne(cascade = CascadeType.REMOVE,fetch = EAGER)
     @JoinColumn(name = "userCrendials_id", referencedColumnName = "id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private UserCredentials userCredentials;
 
-
+    @OneToOne(mappedBy = "user",fetch = LAZY)
+    private Cart cart;
 }

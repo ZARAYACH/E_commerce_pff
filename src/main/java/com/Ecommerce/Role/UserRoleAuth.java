@@ -18,7 +18,7 @@ public class UserRoleAuth {
     @Column(name = "id")
     private Long id;
 
-    @Column
+    @Column(unique = true)
     private String name;
 
 }

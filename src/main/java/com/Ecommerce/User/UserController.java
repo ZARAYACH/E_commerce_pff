@@ -31,10 +31,6 @@ public class UserController {
     public ResponseEntity<?> deleteAccount(Authentication authentication){
         return userService.deleteAccount(authentication);
     }
-//    @PostMapping(path = "/signUp")
-//    public ResponseEntity<?> userSignUp(User user){
-////        return userService.UserSignUp(user);
-//    }
 
     //Admin methods
 
@@ -51,7 +47,7 @@ public class UserController {
         return userService.unSuspendUser(authentication,user);
     }
     @DeleteMapping(path = "/admin/deleteUser")
-    public ResponseEntity<?> deleteUser(Authentication authentication,User toBeDel){
+    public ResponseEntity<?> deleteUser(Authentication authentication,@RequestBody User toBeDel){
         return userService.deleteUser(authentication,toBeDel);
     }
 }

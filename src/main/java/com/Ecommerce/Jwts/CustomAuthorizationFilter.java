@@ -55,7 +55,7 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
                     response.setStatus(498);
                     response.setContentType(APPLICATION_JSON_VALUE);
                     HashMap<String,String> error = new HashMap<>();
-                    error.put("expiredToken",e.getMessage().toString());
+                    error.put("tokenProblem",e.getMessage().toString());
                     System.out.println(e.getMessage().toString());
                     new ObjectMapper().writeValue(response.getOutputStream(),error);
                 }

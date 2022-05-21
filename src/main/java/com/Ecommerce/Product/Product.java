@@ -1,6 +1,6 @@
 package com.Ecommerce.Product;
 
-import com.Ecommerce.Category.Category;
+import com.Ecommerce.OrderItem.Category.Category;
 import com.Ecommerce.ProductImg.ProductImg;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

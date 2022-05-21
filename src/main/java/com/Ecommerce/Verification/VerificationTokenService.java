@@ -1,5 +1,7 @@
 package com.Ecommerce.Verification;
 
+import com.Ecommerce.Cart.CartController;
+import com.Ecommerce.Cart.CartService;
 import com.Ecommerce.MailSender.JavaEmailSenderService;
 import com.Ecommerce.User.User;
 import com.Ecommerce.User.UserRepo;
@@ -22,6 +24,7 @@ public class VerificationTokenService {
     private final JavaEmailSenderService emailSenderService;
     private final BCryptPasswordEncoder passwordEncoder;
 
+    private CartController cartController;
     public String generateVerificationToken() {
         return UUID.randomUUID().toString();
     }
@@ -34,13 +37,14 @@ public class VerificationTokenService {
                 if (Objects.equals(verificationToken, token)) {
                     user.getUserCredentials().setActive(true);
                     user.setActive(true);
+                    cartController.AddCartUser(user);
                     userRepo.save(user);
                     return ResponseEntity.ok().body("this account has been successfully activated");
                 } else {
                     return ResponseEntity.status(HttpStatus.FORBIDDEN).body("this token is invalid please check your inbox");
                 }
             } else {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("this User is already active");
+                return ResponseEntity.status(HttpStatus.OK).body("this User is already active");
             }
 
         } else return ResponseEntity.notFound().build();

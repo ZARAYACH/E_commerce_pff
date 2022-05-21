@@ -1,4 +1,4 @@
-package com.Ecommerce.Category;
+package com.Ecommerce.OrderItem.Category;
 
 import lombok.AllArgsConstructor;
 import org.springframework.http.MediaType;
@@ -20,7 +20,7 @@ public class CategoryService {
 
     public ResponseEntity<?> addCategory(Category category) {
         if (!categorieRepo.existsByName(category.getName())){
-            return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(categorieRepo.save(category));
+            return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(categorieRepo.save(category));
         }else {
             Map<String, String> error = new HashMap<>();
             error.put("error", "category with name"+category.getName()+"already exists");
