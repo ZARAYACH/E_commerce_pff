@@ -1,7 +1,7 @@
 package com.Ecommerce.Product;
 
-import com.Ecommerce.OrderItem.Category.Category;
-import com.Ecommerce.OrderItem.Category.CategorieRepo;
+import com.Ecommerce.Category.Category;
+import com.Ecommerce.Category.CategoryRepo;
 import com.Ecommerce.User.UserRepo;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,7 +19,7 @@ import java.util.Map;
 public class ProductService {
 
     private ProductRepo productRepo;
-    private CategorieRepo categorieRepo;
+    private CategoryRepo categorieRepo;
 
     private UserRepo userRepo;
 

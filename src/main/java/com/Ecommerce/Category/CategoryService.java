@@ -1,4 +1,4 @@
-package com.Ecommerce.OrderItem.Category;
+package com.Ecommerce.Category;
 
 import lombok.AllArgsConstructor;
 import org.springframework.http.MediaType;
@@ -12,7 +12,7 @@ import java.util.Map;
 @AllArgsConstructor
 public class CategoryService {
 
-    private CategorieRepo categorieRepo;
+    private CategoryRepo categorieRepo;
 
     public ResponseEntity<?> getAllCategory() {
         return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(categorieRepo.getAllCategory());

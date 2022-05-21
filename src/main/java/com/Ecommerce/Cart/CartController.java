@@ -17,8 +17,11 @@ public class CartController {
          cartService.addCart(user);
     }
 
-//    @GetMapping(path = "/getAllCartItem")
-//    private ResponseEntity<?> getAllCartItem(Authentication authentication){
-//        return cartService.getAllCartItem(authentication);
-//    }
+    @GetMapping(path = "/getAllCartItems")
+    private ResponseEntity<?> getAllCartItem(Authentication authentication){
+        return cartService.getAllCartItem(authentication);
+    }
+
+
+
 }

@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 
 @Entity(name = "credit_card")
 @NoArgsConstructor
@@ -19,6 +20,15 @@ public class CreditCard {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    private String name;
+    private String cardHolderName;
+
+    private Integer cartNumber;
+
+    private Integer cvv;
+
+    private LocalDate expirationDate;
+
+    private String type;
+
 
 }

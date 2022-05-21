@@ -3,7 +3,6 @@ package com.Ecommerce.CartItem;
 import com.Ecommerce.Cart.Cart;
 import com.Ecommerce.Cart.CartRepo;
 import com.Ecommerce.Product.Product;
-import com.Ecommerce.Product.ProductController;
 import com.Ecommerce.Product.ProductRepo;
 import com.Ecommerce.User.User;
 import com.Ecommerce.User.UserRepo;
@@ -56,12 +55,39 @@ public class CartItemService {
         return null;
     }
 
-    public List<CartItem> getCartsItemsByCart(Authentication authentication, Cart cart) {
-        if (cartRepo.existsById(cart.getId())){
-            List<CartItem> cartItems = cartItemRepo.findAllByCartId(cart.getId());
-            return cartItems;
-        }else {
+    public ResponseEntity<?> deleteFromCart(Authentication authentication, List<CartItem> cartItems) {
+        User user = userRepo.findUserByEmail(authentication.getPrincipal().toString());
+        if (user != null) {
+            Cart cart = user.getCart();
+            if (cart != null) {
+                for (CartItem cartItem : cartItems) {
+                    if (cartRepo.existsById(cartItem.getId())) {
+                        cartItemRepo.delete(cartItem);
+                    }
+                }
+                Map<String, String> error = new HashMap<>();
+                error.put("success", "the items were deleted successfully");
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).contentType(MediaType.APPLICATION_JSON).body(error);
+
+            } else {
+                Map<String, String> error = new HashMap<>();
+                error.put("error", "please go activate your account");
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).contentType(MediaType.APPLICATION_JSON).body(error);
+            }
+        } else {
+            Map<String, String> error = new HashMap<>();
+            error.put("error", "user doesn't exists");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).contentType(MediaType.APPLICATION_JSON).body(error);
+
+        }
+    }
+
+    public List<CartItem> getCartItemsByCart(Authentication authentication, Cart cart) {
+        if (cartRepo.existsById(cart.getId())) {
+            return cartItemRepo.findAllByCartId(cart.getId());
+        } else {
             return null;
         }
     }
+
 }

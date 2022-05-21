@@ -5,10 +5,7 @@ import com.Ecommerce.Product.Product;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -20,7 +17,7 @@ public class CartItemController {
     private CartItemService cartItemService;
 
     public List<CartItem> getCartsItemsByCart(Authentication authentication, Cart cart){
-        List<CartItem> cartItems =cartItemService.getCartsItemsByCart(authentication,cart);
+        List<CartItem> cartItems =cartItemService.getCartItemsByCart(authentication,cart);
         if (cartItems != null){
             return cartItems;
         }else {
@@ -32,4 +29,10 @@ public class CartItemController {
     public ResponseEntity<?> addToCart(Authentication authentication, Product product){
         return cartItemService.addToCart(authentication,product);
     }
+
+    @DeleteMapping(path = "/deleteItemsFromCart")
+    public ResponseEntity<?> deleteItemsFromCart(Authentication authentication,List<CartItem> cartItems){
+        return cartItemService.deleteFromCart(authentication,cartItems);
+    }
+
 }

@@ -1,6 +1,6 @@
 package com.Ecommerce.Product;
 
-import com.Ecommerce.OrderItem.Category.Category;
+import com.Ecommerce.Category.Category;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

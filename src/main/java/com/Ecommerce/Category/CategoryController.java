@@ -1,4 +1,4 @@
-package com.Ecommerce.OrderItem.Category;
+package com.Ecommerce.Category;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

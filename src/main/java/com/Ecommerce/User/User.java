@@ -1,6 +1,7 @@
 package com.Ecommerce.User;
 
 import com.Ecommerce.Cart.Cart;
+import com.Ecommerce.Order.Order;
 import com.Ecommerce.Role.UserRoleAuth;
 import com.Ecommerce.UserCredentiels.UserCredentials;
 import lombok.AllArgsConstructor;
@@ -15,6 +16,7 @@ import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import static javax.persistence.FetchType.*;
 
@@ -52,4 +54,7 @@ public class User {
 
     @OneToOne(mappedBy = "user",fetch = LAZY)
     private Cart cart;
+
+    @OneToMany(cascade = CascadeType.ALL,fetch = LAZY,mappedBy = "user")
+    private List<Order> orders;
 }

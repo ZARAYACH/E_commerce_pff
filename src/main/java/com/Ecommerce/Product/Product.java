@@ -1,6 +1,6 @@
 package com.Ecommerce.Product;
 
-import com.Ecommerce.OrderItem.Category.Category;
+import com.Ecommerce.Category.Category;
 import com.Ecommerce.ProductImg.ProductImg;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -31,7 +31,7 @@ public class Product {
     private String Description;
 
     @Column(nullable = false)
-    private String price;
+    private float price;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(referencedColumnName = "id",name = "categorie_id")
