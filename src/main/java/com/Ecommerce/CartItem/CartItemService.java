@@ -28,15 +28,19 @@ public class CartItemService {
 
     private ProductRepo productRepo;
 
-    public ResponseEntity<?> addToCart(Authentication authentication, Product product) {
+    public ResponseEntity<?> addToCart(Authentication authentication, CartItem  cartItem) {
         if (userRepo.existsByEmail(authentication.getPrincipal().toString()) != null) {
             User user = userRepo.findUserByEmail(authentication.getPrincipal().toString());
-            if (productRepo.existsById(product.getId())) {
+            if (productRepo.existsById(cartItem.getProduct().getId())) {
+                Product product1 = productRepo.getById(cartItem.getProduct().getId());
                 if (user.getCart() != null) {
-                    CartItem cartItem = new CartItem();
                     cartItem.setCart(user.getCart());
-                    cartItem.setProduct(product);
+                    cartItem.setProduct(product1);
                     cartItemRepo.save(cartItem);
+
+                    Map<String, String> succes = new HashMap<>();
+                    succes.put("success", "product added successfully to your cart");
+                    return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(succes);
                 } else {
                     Map<String, String> error = new HashMap<>();
                     error.put("error", "you can't add to cart unless you activate your account");
@@ -52,7 +56,6 @@ public class CartItemService {
             error.put("error", "user does not exists");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).contentType(MediaType.APPLICATION_JSON).body(error);
         }
-        return null;
     }
 
     public ResponseEntity<?> deleteFromCart(Authentication authentication, List<CartItem> cartItems) {
@@ -90,4 +93,28 @@ public class CartItemService {
         }
     }
 
+    public int addQuantity(CartItem cartItem1) {
+        if (cartRepo.existsById(cartItem1.getId())){
+            CartItem cartItem = cartItemRepo.getById(cartItem1.getId());
+            cartItem.setQuantity(cartItem.getQuantity()+1);
+            CartItem saved = cartItemRepo.save(cartItem);
+            return saved.getQuantity();
+        }else {
+            return -1;
+        }
+    }
+    public int minusQuantity(CartItem cartItem1) {
+        if (cartRepo.existsById(cartItem1.getId())){
+            CartItem cartItem = cartItemRepo.getById(cartItem1.getId());
+            if (cartItem.getQuantity()>1){
+                cartItem.setQuantity(cartItem.getQuantity()-1);
+                CartItem saved = cartItemRepo.save(cartItem);
+                return saved.getQuantity();
+            }else {
+                return cartItem.getQuantity();
+            }
+        }else {
+            return -1;
+        }
+    }
 }

@@ -1,5 +1,6 @@
 package com.Ecommerce.Jwts;
 
+import com.Ecommerce.Logs.LogsService;
 import com.Ecommerce.UserCredentiels.UserCredentials;
 import com.Ecommerce.UserCredentiels.UserCredentialsRepo;
 import com.auth0.jwt.JWT;
@@ -31,6 +32,7 @@ public class JwtsService {
     @Autowired
     private UserCredentialsRepo userCredentialsRepo;
 
+
     public String createJwtAccessToken(HttpServletRequest request, User user){
         Algorithm algorithmAccess = Algorithm.HMAC256("secretsecretsecretsecretsecretsecretsecret".getBytes(StandardCharsets.UTF_8));
         return JWT.create()
@@ -56,7 +58,7 @@ public class JwtsService {
     public void getAccessTokenByRefreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String refreshTokenHeader = request.getHeader("refreshToken");
         if (refreshTokenHeader !=null && refreshTokenHeader.startsWith("Bearer ")){
-            String refresh_token =   refreshTokenHeader.substring("Bearer ".length());
+            String refresh_token = refreshTokenHeader.substring("Bearer ".length());
             Algorithm algorithmRefresh = Algorithm.HMAC256("refreshrefreshrefreshrefreshrefreshrefreshrefresh".getBytes(StandardCharsets.UTF_8));
             try {
                 JWTVerifier verifier = JWT.require(algorithmRefresh).build();
