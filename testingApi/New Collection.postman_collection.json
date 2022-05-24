@@ -476,6 +476,78 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "addToCart",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtZWRyYXNzYWNoYW51d3VAZ21haWwuY29tIiwicm9sZXMiOlsiQURNSU4iLCJDVVNUT01FUiJdLCJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjgwODEvYXBpL3YxL3Rva2VuL3JlZnJlc2giLCJleHAiOjE2NTM0MDk1MDUsImlhdCI6MTY1MzM0NjgwMH0.sy6lqXW9dDEzR_ujlTsejQwImdQ_Ui5YLr1LBKaZ-iM",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"product\":{\r\n        \"id\":\"ab2590df-e650-49f8-a6f9-b09425ee46b7\"\r\n    },\r\n    \"quantity\":15\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8081/api/v1/cartItem/addToCart",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"api",
+						"v1",
+						"cartItem",
+						"addToCart"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "makeOrder",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtZWRyYXNzYWNoYW51d3VAZ21haWwuY29tIiwicm9sZXMiOlsiQURNSU4iLCJDVVNUT01FUiJdLCJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjgwODEvYXBpL3YxL3Rva2VuL3JlZnJlc2giLCJleHAiOjE2NTM0MTM3ODksImlhdCI6MTY1MzM0NjgwMH0.UfxQyiXxDnp_KFlRbOqgl1StWkOiGVP70kqN3aBoyk0",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"cardHolderName\":\"mohammed\",\r\n    \"cartNumber\":1111111111111111,\r\n    \"cvv\":\"123\",\r\n    \"expirationDate\":\"2025-02-02\",\r\n    \"type\":\"visa\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8081/api/v1/user/makeOrder",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"api",
+						"v1",
+						"user",
+						"makeOrder"
+					]
+				}
+			},
+			"response": []
 		}
 	]
 }
