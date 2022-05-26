@@ -22,9 +22,9 @@ public class CreditCard {
 
     private String cardHolderName;
 
-    private Integer cartNumber;
+    private String cartNumber;
 
-    private Integer cvv;
+    private String cvv;
 
     private LocalDate expirationDate;
 

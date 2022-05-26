@@ -26,8 +26,17 @@ public class CartItemController {
     }
 
     @PostMapping(path = "/addToCart")
-    public ResponseEntity<?> addToCart(Authentication authentication, Product product){
-        return cartItemService.addToCart(authentication,product);
+    public ResponseEntity<?> addToCart(Authentication authentication,@RequestBody CartItem cartItem){
+        return cartItemService.addToCart(authentication,cartItem);
+    }
+
+    @PutMapping(path = "/addQuantity")
+    public int addQuantity(@RequestBody CartItem cartItem){
+        return cartItemService.addQuantity(cartItem);
+    }
+    @PutMapping(path = "/minusQuantity")
+    public int minusQuantity(@RequestBody CartItem cartItem){
+        return cartItemService.minusQuantity(cartItem);
     }
 
     @DeleteMapping(path = "/deleteItemsFromCart")

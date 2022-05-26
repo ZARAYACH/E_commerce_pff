@@ -3,6 +3,7 @@ package com.Ecommerce.Product;
 import com.Ecommerce.Category.Category;
 import com.Ecommerce.Category.CategoryRepo;
 import com.Ecommerce.User.UserRepo;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -16,6 +17,7 @@ import java.util.Map;
 
 @Service
 @AllArgsConstructor
+
 public class ProductService {
 
     private ProductRepo productRepo;
@@ -43,6 +45,14 @@ public class ProductService {
     }
 
     public ResponseEntity<?> addProduct(Authentication authentication, Product product) {
+        if (product.getCategory().getName() !=null ){
+            Category category = categorieRepo.getCategorieByName(product.getCategory().getName());
+            product.setCategory(category);
+        }else {
+            Map<String, String> error = new HashMap<>();
+            error.put("error", "set a valid category name");
+            return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(error);
+        }
         Product success = productRepo.save(product);
         if (productRepo.existsById(success.getId())){
             return ResponseEntity.status(HttpStatus.CREATED).contentType(MediaType.APPLICATION_JSON).body(success);
