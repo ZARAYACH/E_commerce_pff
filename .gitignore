@@ -31,3 +31,4 @@ build/
 !**/src/main/**/application.properties
 ### VS Code ###
 .vscode/
+*.properties
