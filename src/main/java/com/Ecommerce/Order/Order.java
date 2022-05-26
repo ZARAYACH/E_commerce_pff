@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -25,7 +26,7 @@ public class Order {
 
     private Float totalPrice;
 
-    @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY,mappedBy = "order")
+    @OneToMany(mappedBy = "order")
     private Set<OrderItem> orderItems;
 
     @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
