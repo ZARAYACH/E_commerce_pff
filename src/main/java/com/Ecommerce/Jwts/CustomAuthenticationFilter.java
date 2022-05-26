@@ -93,11 +93,8 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
     }
 
 
-
-    public Map<User, String> successAuth(User user, String refrechToken) {
-        Map<User, String> userStringMap = new HashMap<>();
-        userStringMap.put(user, refrechToken);
-        return userStringMap;
+    //TODO::make a post request to the endpoint responsable of adding a log and call it in the sussful authentification
+    public void makeHttpPostRequest() {
 
     }
 }
