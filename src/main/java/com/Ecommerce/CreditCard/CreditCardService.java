@@ -45,7 +45,7 @@ public class CreditCardService {
         if (card.getCardHolderName() != null)
             if (card.getCartNumber() != null && String.valueOf(card.getCartNumber()).length() == 16)
                 if (card.getCvv() != null && String.valueOf(card.getCvv()).length() == 3)
-                    if (card.getExpirationDate() != null && card.getExpirationDate().isBefore(LocalDate.now()))
+                    if (card.getExpirationDate() != null && !card.getExpirationDate().isBefore(LocalDate.now()))
                         return true;
                     else return false;
                 else return false;

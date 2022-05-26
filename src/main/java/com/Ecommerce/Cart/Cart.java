@@ -23,8 +23,6 @@ public class Cart {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    private Float priceOfAllItems;
-
     @OneToMany(mappedBy = "cart")
     private Set<CartItem> cartItems;
 

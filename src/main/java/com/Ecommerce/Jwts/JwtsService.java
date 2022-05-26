@@ -1,5 +1,6 @@
 package com.Ecommerce.Jwts;
 
+
 import com.Ecommerce.Logs.Logs;
 import com.Ecommerce.Logs.LogsService;
 import com.Ecommerce.UserCredentiels.UserCredentials;
@@ -75,7 +76,7 @@ public class JwtsService {
     public void getAccessTokenByRefreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String refreshTokenHeader = request.getHeader("refreshToken");
         if (refreshTokenHeader !=null && refreshTokenHeader.startsWith("Bearer ")){
-            String refresh_token =   refreshTokenHeader.substring("Bearer ".length());
+            String refresh_token = refreshTokenHeader.substring("Bearer ".length());
             Algorithm algorithmRefresh = Algorithm.HMAC256("refreshrefreshrefreshrefreshrefreshrefreshrefresh".getBytes(StandardCharsets.UTF_8));
             try {
                 JWTVerifier verifier = JWT.require(algorithmRefresh).build();
