@@ -30,7 +30,6 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
     private final AuthenticationManager authenticationManager;
 
     @Autowired
-    private LogsService logsService = new LogsService();
     private JwtsService jwtsService = new JwtsService();
 
 
@@ -75,7 +74,7 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
         User user = (User) authentication.getPrincipal();
 
         String access_token = jwtsService.createJwtAccessToken(request, user);
-        String refresh_token = jwtsService.createJwtRefreshToken(request, user);
+        String refresh_token = jwtsService.createJwtRefreshToken(request,response, user);
         Map<String, String> tokens = new HashMap<>();
         tokens.put("access_token", access_token);
         tokens.put("refresh_token", refresh_token);

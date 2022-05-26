@@ -16,6 +16,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -30,6 +32,7 @@ public class OrderService {
     private CreditCardService creditCardService;
     private UserRepo userRepo;
 
+    private OrderItemRepo orderItemRepo;
     private CartItemRepo cartItemRepo;
 
     public ResponseEntity<?> makeOrderWholeCart(Authentication authentication, CreditCard card) {
@@ -42,17 +45,30 @@ public class OrderService {
                     Order order = new Order();
                     Set<OrderItem> orderItems = new HashSet<>();
                     float totalPrice = 0;
-                    for (CartItem cartItem : cart.getCartItems()) {
-                        OrderItem orderItem = new OrderItem();
-                        orderItem.setProduct(cartItem.getProduct());
-                        orderItem.setQuantity(cartItem.getQuantity());
-                        orderItem.setPriceByQuantity(cartItem.getProduct().getPrice() * cartItem.getQuantity());
-                        totalPrice = totalPrice + orderItem.getPriceByQuantity();
-                    }
+                   if (cart.getCartItems().size() > 0 ){
+                       for (CartItem cartItem : cart.getCartItems()) {
+                           OrderItem orderItem = new OrderItem();
+                           orderItem.setProduct(cartItem.getProduct());
+                           orderItem.setQuantity(cartItem.getQuantity());
+                           orderItem.setPriceByQuantity(cartItem.getProduct().getPrice() * cartItem.getQuantity());
+                           totalPrice = totalPrice + orderItem.getPriceByQuantity();
+                           orderItems.add(orderItem);
+                       }
+                   }else {
+                       Map<String, String> error = new HashMap<>();
+                       error.put("error", "you can't make a empty order");
+                       return ResponseEntity.status(HttpStatus.BAD_REQUEST).contentType(MediaType.APPLICATION_JSON).body(error);
+
+                   }
                     order.setOrderItems(orderItems);
                     order.setTotalPrice(totalPrice);
                     order.setUser(user);
-                    orderRepo.save(order);
+                    order.setTimeStamp(LocalDateTime.now());
+                    Order save  = orderRepo.save(order);
+                    for (OrderItem orderItem : order.getOrderItems()){
+                        orderItem.setOrder(order);
+                        orderItemRepo.save(orderItem);
+                    }
                     cartItemRepo.deleteAll(cart.getCartItems());
                     Map<String, String> error = new HashMap<>();
                     error.put("success", "the purchase done successfully");

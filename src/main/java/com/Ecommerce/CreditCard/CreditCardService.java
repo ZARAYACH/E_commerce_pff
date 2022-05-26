@@ -25,20 +25,20 @@ public class CreditCardService {
         User user = userRepo.findUserByEmail(authentication.getPrincipal().toString());
         if (user != null) {
             if (this.valideCardInfo(card)) {
-                creditCardRepo.save(card);
-                Map<String, String> success = new HashMap<>();
-                success.put("success", "card Added Successfully");
-                return ResponseEntity.status(HttpStatus.FORBIDDEN).contentType(MediaType.APPLICATION_JSON).body(success);
-            } else {
-                Map<String, String> success = new HashMap<>();
-                success.put("error", "card info are invalid");
-                return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(success);
-            }
+                if (creditCardRepo.existsByCardNumber(card.getCartNumber())!= null){
+                    creditCardRepo.save(card);
+                    Map<String, String> success = new HashMap<>();
+                    success.put("success", "card Added Successfully");
+                    return ResponseEntity.status(HttpStatus.FORBIDDEN).contentType(MediaType.APPLICATION_JSON).body(success);
+                }
+                }
+
         } else {
             Map<String, String> success = new HashMap<>();
             success.put("error", "user doesn't exist");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).contentType(MediaType.APPLICATION_JSON).body(success);
         }
+        return null;
     }
 
     public boolean valideCardInfo(CreditCard card) {
