@@ -1,6 +1,7 @@
 package com.Ecommerce.User;
 
 import com.Ecommerce.Cart.Cart;
+import com.Ecommerce.Logs.Logs;
 import com.Ecommerce.Order.Order;
 import com.Ecommerce.Role.UserRoleAuth;
 import com.Ecommerce.UserCredentiels.UserCredentials;
@@ -57,4 +58,8 @@ public class User {
 
     @OneToMany(cascade = CascadeType.ALL,fetch = LAZY,mappedBy = "user")
     private List<Order> orders;
+
+    @OneToMany(mappedBy = "user",fetch = LAZY)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private List<Logs> logs;
 }

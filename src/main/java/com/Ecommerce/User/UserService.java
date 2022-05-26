@@ -179,8 +179,8 @@ public class UserService {
                             mailSender.SendHtmlEmail(user.getEmail(),
                                     "medrassachanuwu@gmail.com",
                                     "verified your account",
-                                    "<h1>verified your cprofile management profile</h1" +
-                                            "<p>Please click <a href="+link+">HERE</a>to verified " + " your account </p>");
+                                    "<h1>to veified your account</h1" +
+                                            "<p>click <a href="+link+">HERE</a></p>");
 
                             Map<String, String> success = new HashMap<>();
                             success.put("success", "the user with Email  :" +user.getEmail()+ " is successfully signed up");

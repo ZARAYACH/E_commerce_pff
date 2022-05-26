@@ -2,9 +2,11 @@ package com.Ecommerce.Order;
 
 import com.Ecommerce.Cart.Cart;
 import com.Ecommerce.CartItem.CartItem;
+import com.Ecommerce.CartItem.CartItemRepo;
 import com.Ecommerce.CreditCard.CreditCard;
 import com.Ecommerce.CreditCard.CreditCardService;
 import com.Ecommerce.OrderItem.OrderItem;
+import com.Ecommerce.OrderItem.OrderItemRepo;
 import com.Ecommerce.User.User;
 import com.Ecommerce.User.UserRepo;
 import lombok.AllArgsConstructor;
@@ -27,43 +29,50 @@ public class OrderService {
 
     private CreditCardService creditCardService;
     private UserRepo userRepo;
+
+    private CartItemRepo cartItemRepo;
+
     public ResponseEntity<?> makeOrderWholeCart(Authentication authentication, CreditCard card) {
         User user = userRepo.findUserByEmail(authentication.getPrincipal().toString());
-        if (user != null){
+        if (user != null) {
             Cart cart = user.getCart();
-            if (cart !=null){
-               if (creditCardService.valideCardInfo(card)){
-                   creditCardService.addCreditCard(authentication,card);
-                   Order order = new Order();
-                   Set<OrderItem> orderItems = new HashSet<>();
-                   float totalPrice = 0;
-                   for (CartItem cartItem :cart.getCartItems()){
-                       OrderItem orderItem = new OrderItem();
-                       orderItem.setProduct(cartItem.getProduct());
-                       orderItem.setQuantity(cartItem.getQuantity());
-                       orderItem.setPriceByQuantity(cartItem.getProduct().getPrice() * cartItem.getQuantity());
-                       totalPrice = totalPrice + orderItem.getPriceByQuantity();
-                   }
-                   order.setOrderItems(orderItems);
-                   order.setTotalPrice(totalPrice);
-                   order.setUser(user);
-                   orderRepo.save(order);
-               }else {
-                   Map<String, String> error = new HashMap<>();
-                   error.put("error", "your credit card info are invalide");
-                   return ResponseEntity.status(HttpStatus.BAD_REQUEST).contentType(MediaType.APPLICATION_JSON).body(error);
+            if (cart != null) {
+                if (creditCardService.valideCardInfo(card)) {
+                    creditCardService.addCreditCard(authentication, card);
+                    Order order = new Order();
+                    Set<OrderItem> orderItems = new HashSet<>();
+                    float totalPrice = 0;
+                    for (CartItem cartItem : cart.getCartItems()) {
+                        OrderItem orderItem = new OrderItem();
+                        orderItem.setProduct(cartItem.getProduct());
+                        orderItem.setQuantity(cartItem.getQuantity());
+                        orderItem.setPriceByQuantity(cartItem.getProduct().getPrice() * cartItem.getQuantity());
+                        totalPrice = totalPrice + orderItem.getPriceByQuantity();
+                    }
+                    order.setOrderItems(orderItems);
+                    order.setTotalPrice(totalPrice);
+                    order.setUser(user);
+                    orderRepo.save(order);
+                    cartItemRepo.deleteAll(cart.getCartItems());
+                    Map<String, String> error = new HashMap<>();
+                    error.put("success", "the purchase done successfully");
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).contentType(MediaType.APPLICATION_JSON).body(error);
 
-               }
-            }else {
+                } else {
+                    Map<String, String> error = new HashMap<>();
+                    error.put("error", "your credit card info are invalide");
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).contentType(MediaType.APPLICATION_JSON).body(error);
+
+                }
+            } else {
                 Map<String, String> error = new HashMap<>();
                 error.put("error", "please go activate your account");
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).contentType(MediaType.APPLICATION_JSON).body(error);
             }
-        }else {
+        } else {
             Map<String, String> error = new HashMap<>();
             error.put("error", "user doesn't exists");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).contentType(MediaType.APPLICATION_JSON).body(error);
         }
-        return null;
     }
 }

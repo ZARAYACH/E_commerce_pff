@@ -33,6 +33,9 @@ public class Product {
     @Column(nullable = false)
     private float price;
 
+    @Column
+    private int quantityToSell;
+
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(referencedColumnName = "id",name = "categorie_id")
     private Category category;
