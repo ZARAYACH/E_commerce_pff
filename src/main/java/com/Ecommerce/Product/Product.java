@@ -37,6 +37,9 @@ public class Product {
     @Column(nullable = false)
     private float price;
 
+    @Column
+    private int quantityToSell;
+
     @ManyToOne(cascade = CascadeType.ALL)
     @OnDelete(action = OnDeleteAction.NO_ACTION)
     @JoinColumn(referencedColumnName = "id",name = "categorie_id")
