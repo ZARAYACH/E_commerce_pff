@@ -74,7 +74,7 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
         User user = (User) authentication.getPrincipal();
 
         String access_token = jwtsService.createJwtAccessToken(request, user);
-        String refresh_token = jwtsService.createJwtRefreshToken(request,response, user);
+        String refresh_token = jwtsService.createJwtRefreshToken(request,response, user,access_token);
         Map<String, String> tokens = new HashMap<>();
         tokens.put("access_token", access_token);
         tokens.put("refresh_token", refresh_token);

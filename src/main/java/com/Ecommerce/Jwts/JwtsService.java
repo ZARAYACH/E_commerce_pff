@@ -8,7 +8,10 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -16,7 +19,12 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.sql.Date;
 import java.time.LocalDate;
@@ -46,7 +54,7 @@ public class JwtsService {
                 .sign(algorithmAccess);
     }
 
-    public String createJwtRefreshToken(HttpServletRequest request,HttpServletResponse response,User user){
+    public String createJwtRefreshToken(HttpServletRequest request, HttpServletResponse response, User user,String accessToken) throws JsonProcessingException {
         Algorithm algorithmRefresh = Algorithm.HMAC256("refreshrefreshrefreshrefreshrefreshrefreshrefresh".getBytes(StandardCharsets.UTF_8));
         String refrechToken = JWT.create()
                 .withSubject(user.getUsername())
@@ -61,8 +69,11 @@ public class JwtsService {
         log.setLoginTime(LocalDateTime.now());
         log.setLogoutTime(null);
         log.setUserAgent(request.getHeader("User-Agent") );
-//        log.setUser(appUser);
-//        userCredentialsRepo.savelog(log.getIpAddress(),log.getLoginTime(),log.getLogoutTime(),log.getRefreshToken(),log.getUserAgent(),log.getUser().getId());
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.findAndRegisterModules();
+        String jsonLog = objectMapper.writeValueAsString(log);
+        sendPOSTRequest("http://localhost:8081/api/v1/logs/add",jsonLog,accessToken);
         return refrechToken;
     }
 
@@ -101,6 +112,48 @@ public class JwtsService {
 
             }
         }
+    }
+    public static JsonObject sendPOSTRequest(String urlAccessd, String body,String accesToken) {
+        try {
+            String post_data = body;
+
+            URL url = new URL(urlAccessd);
+            HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+            httpURLConnection.setRequestMethod("POST");
+            //adding header
+            httpURLConnection.setRequestProperty("Authorization","Bearer "+accesToken);
+            httpURLConnection.setRequestProperty("Accept", "application/json");
+            httpURLConnection.setRequestProperty("Content-Type", "application/json");
+            httpURLConnection.setDoOutput(true);
+
+
+            //Adding Post Data
+            OutputStream outputStream = httpURLConnection.getOutputStream();
+            outputStream.write(post_data.getBytes());
+            outputStream.flush();
+            outputStream.close();
+
+
+            System.out.println("Response Code " + httpURLConnection.getResponseCode());
+
+//            String line = "";
+//            InputStreamReader inputStreamReader = new InputStreamReader(httpURLConnection.getInputStream());
+//            BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+//            StringBuilder response = new StringBuilder();
+//            while ((line = bufferedReader.readLine()) != null) {
+//                response.append(line);
+//            }
+//            bufferedReader.close();
+//            Gson gson1 = new Gson();
+//            JsonObject object = gson1.fromJson(response.toString(), JsonObject.class);
+//            return object;
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Error in Making POST Request");
+        }
+        return null;
     }
 
 }

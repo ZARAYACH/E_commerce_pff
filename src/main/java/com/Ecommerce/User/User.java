@@ -5,6 +5,8 @@ import com.Ecommerce.Logs.Logs;
 import com.Ecommerce.Order.Order;
 import com.Ecommerce.Role.UserRoleAuth;
 import com.Ecommerce.UserCredentiels.UserCredentials;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -57,7 +59,8 @@ public class User {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private UserCredentials userCredentials;
 
-    @OneToOne(mappedBy = "user",fetch = LAZY)
+    @OneToOne(mappedBy = "user")
+    @JsonBackReference
     private Cart cart;
 
     @OneToMany(cascade = CascadeType.ALL,fetch = LAZY,mappedBy = "user")
@@ -65,5 +68,6 @@ public class User {
 
     @OneToMany(mappedBy = "user",fetch = LAZY)
     @OnDelete(action = OnDeleteAction.CASCADE)
+    @JsonManagedReference
     private List<Logs> logs;
 }
