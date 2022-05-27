@@ -6,8 +6,10 @@ INSERT IGNORE INTO ecommerce_pff.cart (id, user_id) VALUES (1, 1);
 INSERT IGNORE INTO ecommerce_pff.cart (id, user_id) VALUES (1, 1);
 INSERT IGNORE into ecommerce_pff.product (id, description, name, price, quantity_to_sell, categorie_id) VALUES ('ba3e610c-8b64-4cf9-939a-d8314d41ae16', 'loreme lomerelm,mla', 'sabon', 121, 0, null);
 
-INSERT IGNORE INTO ecommerce_pff.user_roles (user_id, roles_id) VALUES (1, 2);
-INSERT IGNORE INTO ecommerce_pff.user_roles (user_id, roles_id) VALUES (1, 1);
-
 insert IGNORE into role(name) values ("ADMIN");
 insert IGNORE into role(name) values  ("CUSTOMER");
+
+INSERT IGNORE INTO ecommerce_pff.user_roles (user_id, role_id) VALUES (1, 2);
+INSERT IGNORE INTO ecommerce_pff.user_roles (user_id, role_id) VALUES (1, 1);
+
+

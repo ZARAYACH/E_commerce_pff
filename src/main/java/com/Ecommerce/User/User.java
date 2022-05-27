@@ -40,6 +40,10 @@ public class User {
 
     @ManyToMany(fetch = EAGER)
     @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinTable(name = "user_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"),
+            uniqueConstraints = @UniqueConstraint(name = "UNIQUE_USER_ROLE",columnNames ={"user_id","role_id"} ) )
     private Collection<UserRoleAuth> roles = new ArrayList<>();
 
     private LocalDate birthDate;
