@@ -1,6 +1,8 @@
 package com.Ecommerce.Logs;
 
 import com.Ecommerce.User.User;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,7 +25,7 @@ public class Logs {
     private LocalDateTime loginTime;
 
     private LocalDateTime logoutTime;
-
+    @Column(length = 100000)
     private String refreshToken;
 
     private String userAgent;
@@ -31,6 +33,7 @@ public class Logs {
     private String ipAddress;
 
     @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    @JsonBackReference
     private User user;
 
 }

@@ -3,6 +3,7 @@ package com.Ecommerce.Cart;
 
 import com.Ecommerce.CartItem.CartItem;
 import com.Ecommerce.User.User;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 
 import javax.persistence.*;
@@ -26,6 +27,7 @@ public class Cart {
     @OneToMany(mappedBy = "cart")
     private Set<CartItem> cartItems;
 
+    @JsonManagedReference
     @OneToOne(fetch = FetchType.LAZY)
     private User user;
 

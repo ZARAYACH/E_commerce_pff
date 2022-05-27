@@ -18,6 +18,11 @@ public class UserController {
         return userService.UserSignUp(user);
     }
 
+    @PostMapping(path = "/user/logout")
+    public ResponseEntity<?> userLougout(Authentication authentication){
+        return userService.logout(authentication);
+
+    }
     //user methods
     @GetMapping(path = "/user/info")
     public ResponseEntity<?> getUserInfo(Authentication authentication){
