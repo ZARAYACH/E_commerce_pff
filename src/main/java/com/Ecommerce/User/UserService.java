@@ -1,5 +1,7 @@
 package com.Ecommerce.User;
 
+import com.Ecommerce.Logs.Logs;
+import com.Ecommerce.Logs.LogsRepo;
 import com.Ecommerce.MailSender.JavaEmailSenderService;
 import com.Ecommerce.Role.UserRoleAuthRepo;
 import com.Ecommerce.UserCredentiels.UserCredentials;
@@ -14,6 +16,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
@@ -27,6 +30,8 @@ public class UserService {
     private UserRoleAuthRepo userRoleAuthRepo;
 
     private JavaEmailSenderService mailSender;
+
+    private LogsRepo logsRepo;
 
     public ResponseEntity<?> getUserInfo(Authentication authentication) {
         String email = authentication.getPrincipal().toString();
@@ -213,5 +218,22 @@ public class UserService {
             error.put("error", "this email is already exists");
             return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(error);
         }
+    }
+
+    public ResponseEntity<?> logout(Authentication authentication) {
+
+        User user = userRepo.findUserByEmail(authentication.getPrincipal().toString());
+        if (user!=null){
+            List<Logs> logs = logsRepo.findAllByUserWhereReferechTokenIsNotNull(user);
+            for (Logs log : logs){
+                log.setLogoutTime(LocalDateTime.now());
+                log.setRefreshToken(null);
+            }
+            logsRepo.saveAll(logs);
+            return ResponseEntity.ok().build();
+        }else {
+            return ResponseEntity.notFound().build();
+        }
+
     }
 }

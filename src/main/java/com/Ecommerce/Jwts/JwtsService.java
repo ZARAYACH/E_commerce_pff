@@ -2,6 +2,7 @@ package com.Ecommerce.Jwts;
 
 
 import com.Ecommerce.Logs.Logs;
+import com.Ecommerce.Logs.LogsRepo;
 import com.Ecommerce.UserCredentiels.UserCredentials;
 import com.Ecommerce.UserCredentiels.UserCredentialsRepo;
 import com.auth0.jwt.JWT;
@@ -42,6 +43,8 @@ public class JwtsService {
     @Autowired
     private UserCredentialsRepo userCredentialsRepo;
 
+    @Autowired
+    private LogsRepo logsRepo;
 
     public String createJwtAccessToken(HttpServletRequest request, User user){
         Algorithm algorithmAccess = Algorithm.HMAC256("secretsecretsecretsecretsecretsecretsecret".getBytes(StandardCharsets.UTF_8));
@@ -83,24 +86,31 @@ public class JwtsService {
             String refresh_token = refreshTokenHeader.substring("Bearer ".length());
             Algorithm algorithmRefresh = Algorithm.HMAC256("refreshrefreshrefreshrefreshrefreshrefreshrefresh".getBytes(StandardCharsets.UTF_8));
             try {
-                JWTVerifier verifier = JWT.require(algorithmRefresh).build();
-                DecodedJWT decodedJWT = verifier.verify(refresh_token);
-                String email = decodedJWT.getSubject();
-                UserCredentials userCredentials = userCredentialsRepo.getByEmail(email);
-                User user = new User(userCredentials.getEmail(),
-                        userCredentials.getPassword(),
-                        userCredentials.isEnabled(),
-                        userCredentials.isCredentialsNonExpired(),
-                        userCredentials.isCredentialsNonExpired(),
-                        userCredentials.isAccountNonLocked(),
-                        userCredentials.getAuthorities());
-                String access_token = createJwtAccessToken(request,user);
-                Map<String, String> tokens = new HashMap<>();
-                tokens.put("access_token", access_token);
-                tokens.put("refresh_token", refresh_token);
-                response.setContentType(APPLICATION_JSON_VALUE);
-                new ObjectMapper().writeValue(response.getOutputStream(), tokens);
-
+               if (logsRepo.existsByRefreshTokenAndAndLogoutTimeIsNull(refresh_token)){
+                   JWTVerifier verifier = JWT.require(algorithmRefresh).build();
+                   DecodedJWT decodedJWT = verifier.verify(refresh_token);
+                   String email = decodedJWT.getSubject();
+                   UserCredentials userCredentials = userCredentialsRepo.getByEmail(email);
+                   User user = new User(userCredentials.getEmail(),
+                           userCredentials.getPassword(),
+                           userCredentials.isEnabled(),
+                           userCredentials.isCredentialsNonExpired(),
+                           userCredentials.isCredentialsNonExpired(),
+                           userCredentials.isAccountNonLocked(),
+                           userCredentials.getAuthorities());
+                   String access_token = createJwtAccessToken(request,user);
+                   Map<String, String> tokens = new HashMap<>();
+                   tokens.put("access_token", access_token);
+                   tokens.put("refresh_token", refresh_token);
+                   response.setContentType(APPLICATION_JSON_VALUE);
+                   new ObjectMapper().writeValue(response.getOutputStream(), tokens);
+               }else{
+                   response.setStatus(FORBIDDEN.value());
+                   response.setContentType(APPLICATION_JSON_VALUE);
+                   HashMap<String,String> error = new HashMap<>();
+                   error.put("error","this refresh token is already been destroyed");
+                   new ObjectMapper().writeValue(response.getOutputStream(),error.toString());
+               }
             }catch (Exception e){
                 response.setStatus(FORBIDDEN.value());
                 response.setContentType(APPLICATION_JSON_VALUE);
