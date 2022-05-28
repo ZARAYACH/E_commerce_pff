@@ -19,12 +19,15 @@ import java.util.Set;
 @Getter
 public class Order {
 
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private int id;
 
     private Float totalPrice;
+
+    private OrderStatus status;
 
     @OneToMany(mappedBy = "order")
     private Set<OrderItem> orderItems;

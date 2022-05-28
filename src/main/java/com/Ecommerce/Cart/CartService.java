@@ -1,6 +1,7 @@
 package com.Ecommerce.Cart;
 
 import com.Ecommerce.CartItem.CartItem;
+import com.Ecommerce.CartItem.CartItemRepo;
 import com.Ecommerce.CartItem.CartItemService;
 import com.Ecommerce.User.User;
 import com.Ecommerce.User.UserRepo;
@@ -21,8 +22,9 @@ public class CartService {
 
     private CartRepo cartRepo;
     private UserRepo userRepo;
-
     private CartItemService cartItemService;
+
+    private CartItemRepo cartItemRepo;
 
     public void addCart(User user) {
         if (userRepo.existsById(user.getId())) {
@@ -35,16 +37,38 @@ public class CartService {
     public ResponseEntity<?> getAllCartItem(Authentication authentication) {
         User user = userRepo.findUserByEmail(authentication.getPrincipal().toString());
         if (user.getCart() != null) {
-           List<CartItem> cartItems =  cartItemService.getCartItemsByCart(authentication,user.getCart());
-           return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(cartItems);
-        }else {
+            List<CartItem> cartItems = cartItemService.getCartItemsByCart(authentication, user.getCart());
+            return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(cartItems);
+        } else {
             Map<String, String> error = new HashMap<>();
             error.put("error", "please go activate your account");
             return ResponseEntity.status(HttpStatus.FORBIDDEN).contentType(MediaType.APPLICATION_JSON).body(error);
         }
     }
 
-    public List<CartItem> returnCartItems(Authentication authentication,Cart cart){
-        return cartItemService.getCartItemsByCart(authentication,cart);
+    public List<CartItem> returnCartItems(Authentication authentication, Cart cart) {
+        return cartItemService.getCartItemsByCart(authentication, cart);
+    }
+
+    public ResponseEntity<?> deleteAllCartItems(Authentication authentication) {
+        User user = userRepo.findUserByEmail(authentication.getPrincipal().toString());
+        if (user != null) {
+            Cart cart = cartRepo.findCartById(user.getCart().getId());
+            if (cart != null) {
+                List<CartItem> cartItems = cartItemRepo.findAllByCartId(cart.getId());
+                if (cartItems.size() > 0) {
+                    cartItemRepo.deleteAllByCartId(cart.getId());
+                }
+                return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body("deleted wth success");
+            } else {
+                Map<String, String> error = new HashMap<>();
+                error.put("error", "please go activate your account");
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).contentType(MediaType.APPLICATION_JSON).body(error);
+            }
+        } else {
+            Map<String, String> error = new HashMap<>();
+            error.put("error", "user doesn't exists");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).contentType(MediaType.APPLICATION_JSON).body(error);
+        }
     }
 }

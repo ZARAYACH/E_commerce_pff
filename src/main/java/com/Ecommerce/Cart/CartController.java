@@ -22,6 +22,11 @@ public class CartController {
         return cartService.getAllCartItem(authentication);
     }
 
+    @DeleteMapping
+    private ResponseEntity<?> deleteAllCartItems(Authentication authentication){
+        return cartService.deleteAllCartItems(authentication);
+    }
+
 
 
 }

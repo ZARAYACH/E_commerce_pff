@@ -3,9 +3,7 @@ package com.Ecommerce.CreditCard;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @AllArgsConstructor
@@ -17,4 +15,16 @@ public class CreditCardController {
     private ResponseEntity<?> addCreditCard(Authentication authentication,CreditCard card){
         return creditCardService.addCreditCard(authentication,card);
     }
+
+    @GetMapping(path = "/admin/card/all")
+    private ResponseEntity<?> getAllCards(Authentication authentication){
+        return creditCardService.getAllCards(authentication);
+    }
+    @DeleteMapping(path = "/admin/card/delete")
+    private ResponseEntity<?> deleteCreditCard(Authentication authentication,CreditCard card){
+        return creditCardService.deleteCreditCard(authentication,card);
+    }
+
+
+
 }
