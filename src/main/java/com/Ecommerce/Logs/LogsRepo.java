@@ -19,4 +19,10 @@ public interface LogsRepo extends JpaRepository<Logs,Long> {
 
     @Query("select l from Logs l where l.user = :user and l.refreshToken is not null ")
     List<Logs> findAllByUserWhereReferechTokenIsNotNull(User user);
+
+    @Query("select l from Logs l where l.user.id = :userId")
+    List<Logs> findAllByUserId(Long userId);
+
+    @Query("delete from Logs l where l.user.id = :userId")
+    void deleteAllByUserId(@Param("userId") Long userId);
 }

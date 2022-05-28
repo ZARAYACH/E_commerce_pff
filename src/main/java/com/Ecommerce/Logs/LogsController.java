@@ -4,13 +4,11 @@ import lombok.AllArgsConstructor;
 import lombok.extern.java.Log;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.websocket.server.PathParam;
 
 @RestController
 @AllArgsConstructor
@@ -23,4 +21,25 @@ public class LogsController {
         return logsService.addLog(authentication,log);
 
     }
+    @GetMapping(path = "/admin/logs/all")
+    public ResponseEntity<?> getAllLogs(Authentication authentication){
+        return logsService.getAllLog(authentication);
+    }
+
+    @GetMapping(path = "/admin/logs/{userId}/all")
+    public ResponseEntity<?> getAllLogsByUser(Authentication authentication,@PathParam("userId") Long userID){
+        return logsService.getAllLogsByUser(authentication,userID);
+
+    }
+    @DeleteMapping(path = "/admin/logs/deleteAll")
+    public ResponseEntity<?> deleteAllLogs(Authentication authentication){
+        return logsService.deleteAllLogs(authentication);
+
+    }
+    @DeleteMapping(path = "/admin/logs/{userId}/deleteAll")
+    public ResponseEntity<?> deleteAllLogsByuserId(Authentication authentication,@PathParam("userId")Long userId ){
+        return logsService.deleteAllLogsByuserId(authentication,userId);
+
+    }
+
 }
