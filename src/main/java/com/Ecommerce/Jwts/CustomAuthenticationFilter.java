@@ -1,9 +1,13 @@
 package com.Ecommerce.Jwts;
 
 
+import com.Ecommerce.Logs.Logs;
+import com.Ecommerce.Logs.LogsRepo;
 import com.Ecommerce.Logs.LogsService;
+import com.Ecommerce.User.UserRepo;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -19,29 +23,20 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.MediaType.*;
 
-
+@AllArgsConstructor
 public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     private final AuthenticationManager authenticationManager;
+    private JwtsService jwtsService ;
 
-    @Autowired
-    private JwtsService jwtsService = new JwtsService();
-
-
-    public CustomAuthenticationFilter(AuthenticationManager authenticationManager) {
-        this.authenticationManager = authenticationManager;
-    }
-
-    public CustomAuthenticationFilter(AuthenticationManager authenticationManager, JwtsService jwtsService) {
-        this.authenticationManager = authenticationManager;
-        this.jwtsService = jwtsService;
-    }
-
+    private LogsRepo logsRepo;
+    private UserRepo userRepo;
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
@@ -72,9 +67,19 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication) throws IOException, ServletException {
         User user = (User) authentication.getPrincipal();
-
         String access_token = jwtsService.createJwtAccessToken(request, user);
         String refresh_token = jwtsService.createJwtRefreshToken(request,response, user,access_token);
+        Logs log = new Logs();
+        log.setRefreshToken(refresh_token);
+        log.setIpAddress(request.getRemoteAddr());
+        log.setLoginTime(LocalDateTime.now());
+        com.Ecommerce.User.User appUser = userRepo.findUserByEmail(user.getUsername());
+        appUser.setLogedIn(true);
+        log.setUser(appUser);
+        log.setLogoutTime(null);
+        log.setUserAgent(request.getHeader("User-Agent") );
+        logsRepo.save(log);
+        userRepo.save(appUser);
         Map<String, String> tokens = new HashMap<>();
         tokens.put("access_token", access_token);
         tokens.put("refresh_token", refresh_token);

@@ -10,36 +10,27 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping(path = "/api/v1/cartItem")
+@RequestMapping(path = "/api/v1")
 @AllArgsConstructor
 public class CartItemController {
 
     private CartItemService cartItemService;
 
-    public List<CartItem> getCartsItemsByCart(Authentication authentication, Cart cart){
-        List<CartItem> cartItems =cartItemService.getCartItemsByCart(authentication,cart);
-        if (cartItems != null){
-            return cartItems;
-        }else {
-            return null;
-        }
-    }
-
-    @PostMapping(path = "/addToCart")
+    @PostMapping(path = "/user/cart/item/add")
     public ResponseEntity<?> addToCart(Authentication authentication,@RequestBody CartItem cartItem){
         return cartItemService.addToCart(authentication,cartItem);
     }
 
-    @PutMapping(path = "/addQuantity")
-    public int addQuantity(@RequestBody CartItem cartItem){
-        return cartItemService.addQuantity(cartItem);
+    @PutMapping(path = "/user/cart/add/quantity")
+    public int addQuantity(Authentication authentication,@RequestBody CartItem cartItem){
+        return cartItemService.addQuantity(authentication,cartItem);
     }
-    @PutMapping(path = "/minusQuantity")
-    public int minusQuantity(@RequestBody CartItem cartItem){
-        return cartItemService.minusQuantity(cartItem);
+    @PutMapping(path = "/user/cart/item/minus/Quantity")
+    public int minusQuantity(Authentication authentication,@RequestBody CartItem cartItem){
+        return cartItemService.minusQuantity(authentication,cartItem);
     }
 
-    @DeleteMapping(path = "/deleteItemsFromCart")
+    @DeleteMapping(path = "/user/cart/item/delete")
     public ResponseEntity<?> deleteItemsFromCart(Authentication authentication,List<CartItem> cartItems){
         return cartItemService.deleteFromCart(authentication,cartItems);
     }

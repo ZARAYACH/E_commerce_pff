@@ -56,10 +56,10 @@ public class CartService {
             Cart cart = cartRepo.findCartById(user.getCart().getId());
             if (cart != null) {
                 List<CartItem> cartItems = cartItemRepo.findAllByCartId(cart.getId());
-                if (cartItems.size() > 0) {
-                    cartItemRepo.deleteAllByCartId(cart.getId());
-                }
-                return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body("deleted wth success");
+                cartItemRepo.deleteAll(cartItems);
+                Map<String, String> error = new HashMap<>();
+                error.put("success", "deleted wth success");
+                return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(error);
             } else {
                 Map<String, String> error = new HashMap<>();
                 error.put("error", "please go activate your account");

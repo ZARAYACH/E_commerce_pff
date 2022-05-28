@@ -163,8 +163,7 @@ public class UserService {
 
     //TODO:to be compeleted later on
     public ResponseEntity<?> UserSignUp(User user) {
-        System.out.printf(user.getEmail());
-        if (userRepo.existsByEmail(user.getEmail())==null) {
+        if (userRepo.existsByEmail(user.getEmail())==null && validEmail(user)  ) {
             if (user.getBirthDate().getYear() < LocalDate.now().getYear() || user.getBirthDate() != null) {
                 if (userRepo.existsByPhoneNumber(user.getPhoneNumber())==null) {
                     if (user.getUserCredentials() != null) {
@@ -215,7 +214,7 @@ public class UserService {
 
         }else {
             Map<String, String> error = new HashMap<>();
-            error.put("error", "this email is already exists");
+            error.put("error", "this email is already exists or it's not respecting email format");
             return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(error);
         }
     }
@@ -224,16 +223,23 @@ public class UserService {
 
         User user = userRepo.findUserByEmail(authentication.getPrincipal().toString());
         if (user!=null){
+            user.setLogedIn(false);
             List<Logs> logs = logsRepo.findAllByUserWhereReferechTokenIsNotNull(user);
             for (Logs log : logs){
                 log.setLogoutTime(LocalDateTime.now());
                 log.setRefreshToken(null);
             }
+            userRepo.save(user);
             logsRepo.saveAll(logs);
             return ResponseEntity.ok().build();
         }else {
             return ResponseEntity.notFound().build();
         }
 
+    }
+    private boolean validEmail(User user) {
+        String email = user.getEmail();
+        var regexPattern = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
+        return email.matches(regexPattern);
     }
 }

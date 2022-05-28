@@ -32,7 +32,7 @@ public class Logs {
 
     private String ipAddress;
 
-    @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.MERGE)
     @JsonBackReference
     private User user;
 
