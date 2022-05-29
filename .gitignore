@@ -3,6 +3,8 @@ target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
+!images/products
+!images/users
 
 ### STS ###
 .apt_generated
@@ -30,6 +32,9 @@ build/
 !**/src/test/**/build/
 !**/src/main/**/application.properties
 src/main/resources/application.properties
+images/products/**
+images/users/**
 ### VS Code ###
 .vscode/
 *.properties
+

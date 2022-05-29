@@ -2,7 +2,9 @@ package com.Ecommerce.Product;
 
 import com.Ecommerce.Category.Category;
 import com.Ecommerce.ProductImg.ProductImg;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

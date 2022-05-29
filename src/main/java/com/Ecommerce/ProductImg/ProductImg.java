@@ -1,6 +1,7 @@
 package com.Ecommerce.ProductImg;
 
 import com.Ecommerce.Product.Product;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,6 +25,7 @@ public class ProductImg {
     @Column
     private boolean isPrimaryImg;
 
+    @JsonBackReference
     @ManyToOne(fetch = FetchType.EAGER)
     private Product product;
 }
