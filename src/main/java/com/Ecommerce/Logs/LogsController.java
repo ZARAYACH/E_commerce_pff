@@ -16,11 +16,8 @@ import javax.websocket.server.PathParam;
 public class LogsController {
 
     private LogsService logsService;
-    @PostMapping(path = "/logs/add")
-    public ResponseEntity<?> addLog(Authentication authentication,@RequestBody Logs log){
-        return logsService.addLog(authentication,log);
 
-    }
+
     @GetMapping(path = "/admin/logs/all")
     public ResponseEntity<?> getAllLogs(Authentication authentication){
         return logsService.getAllLog(authentication);

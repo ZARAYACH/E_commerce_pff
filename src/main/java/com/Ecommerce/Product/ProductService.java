@@ -96,4 +96,8 @@ public class ProductService {
         }
 
     }
+
+    public ResponseEntity<?> getAllProducts() {
+        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(productRepo.findAll());
+    }
 }

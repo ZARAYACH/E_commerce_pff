@@ -50,6 +50,7 @@ public class User {
 
     private LocalDate birthDate;
     private boolean isActive;
+    private boolean isLogedIn;
     private String phoneNumber;
     private String img;
 

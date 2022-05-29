@@ -3,6 +3,7 @@ package com.Ecommerce.CartItem;
 
 import com.Ecommerce.Cart.Cart;
 import com.Ecommerce.Product.Product;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -31,6 +32,7 @@ public class CartItem {
 
     private int quantity;
 
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "cart_id",referencedColumnName = "id",nullable = false)
     private Cart cart;

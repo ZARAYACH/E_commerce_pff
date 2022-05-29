@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping(path = "/api/v1/cart")
+@RequestMapping(path = "/api/v1")
 public class CartController {
 
     private CartService cartService;
@@ -17,12 +17,12 @@ public class CartController {
          cartService.addCart(user);
     }
 
-    @GetMapping(path = "/getAllCartItems")
+    @GetMapping(path = "/user/cart/Cartitems/all")
     private ResponseEntity<?> getAllCartItem(Authentication authentication){
         return cartService.getAllCartItem(authentication);
     }
 
-    @DeleteMapping
+    @DeleteMapping(path = "/user/cart/Cartitems/deleteAll")
     private ResponseEntity<?> deleteAllCartItems(Authentication authentication){
         return cartService.deleteAllCartItems(authentication);
     }

@@ -13,7 +13,12 @@ public class ProductController {
 
     private ProductService productService;
     //public
-    @GetMapping(path = "/products/categorie/{categorie}")
+    @GetMapping(path = "/product/all")
+    public ResponseEntity<?> getAllProducts(){
+        return productService.getAllProducts();
+    }
+
+    @GetMapping(path = "/product/categorie/{categorie}")
     public ResponseEntity<?> getProductsByCat(@PathVariable String categorieName) {
         return productService.getProductBycategorie(categorieName);
 

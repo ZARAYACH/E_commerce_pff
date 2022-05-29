@@ -66,17 +66,6 @@ public class JwtsService {
                 .withClaim("roles", user.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()))
                 .withIssuer(request.getRequestURL().toString())
                 .sign(algorithmRefresh);
-        Logs log = new Logs();
-        log.setRefreshToken(refrechToken);
-        log.setIpAddress(request.getRemoteAddr());
-        log.setLoginTime(LocalDateTime.now());
-        log.setLogoutTime(null);
-        log.setUserAgent(request.getHeader("User-Agent") );
-
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.findAndRegisterModules();
-        String jsonLog = objectMapper.writeValueAsString(log);
-        sendPOSTRequest("http://localhost:8081/api/v1/logs/add",jsonLog,accessToken);
         return refrechToken;
     }
 
