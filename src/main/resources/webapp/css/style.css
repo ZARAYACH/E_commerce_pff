@@ -1,0 +1,67 @@
+@import url('https://fonts.googleapis.com/css2?family=PT+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+
+*{
+    font-size: 16px;
+    font-family: 'PT Sans', sans-serif;
+}
+body{
+    padding: 0;
+    margin: 0;
+}
+header{
+    display: flex;
+    width: 100%;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-around;
+    background-color: #e8ebed;
+    position: sticky;
+    top: 0;
+}
+.links{
+    width: 50%;
+}
+.links a{
+    color: #626069;
+    text-decoration: none;
+    transition: 3s;
+}
+.links a:hover{
+    color: #56545a;
+}
+.logo{
+    width: 25%;
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    justify-content: space-around;
+}
+.logo a{
+    color: #323136;
+    font-size: 1.5rem;
+    text-decoration: none;
+    background: -webkit-linear-gradient(rgb(252, 69, 69), rgb(68, 138, 219));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+.buttons{
+    width: 25%;
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    justify-content: center;
+}
+.buttons .button{
+    margin-left: 2rem;
+
+}
+nav ul{
+    list-style: none;
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    justify-content: space-around;
+}
+nav ul li{
+    display: inline;
+}
