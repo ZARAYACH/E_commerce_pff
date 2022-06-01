@@ -13,5 +13,7 @@ public class ResourceConfig implements WebMvcConfigurer {
         Path uplaodPath = Paths.get("./images/products");
         String imgUplaod= uplaodPath.toFile().getAbsolutePath();
         registry.addResourceHandler("/images/products/**").addResourceLocations("file:/"+imgUplaod+"/");
+        registry.addResourceHandler("/static/**").addResourceLocations("class:/static/");
+
     }
 }

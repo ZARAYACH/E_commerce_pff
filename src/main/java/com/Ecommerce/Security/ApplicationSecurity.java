@@ -9,7 +9,9 @@ import com.Ecommerce.Logs.LogsRepo;
 import com.Ecommerce.User.UserRepo;
 import com.Ecommerce.User.UserRoles;
 import com.Ecommerce.UserCredentiels.UserCredentialsService;
+import com.Ecommerce.confige.CorsFilter;
 import lombok.AllArgsConstructor;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -33,9 +35,12 @@ public class ApplicationSecurity extends WebSecurityConfigurerAdapter {
     private final UserRepo userRepo;
     private final JwtsService jwtsService;
     private final LogsRepo logsRepo;
+
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
+
                 .csrf().disable()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -49,6 +54,7 @@ public class ApplicationSecurity extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/api/v1/product/**").permitAll()
                 .antMatchers("/images/**").permitAll()
+                .antMatchers("/static/**").permitAll()
                 .antMatchers("/api/v1/user/signup").permitAll()
                 .antMatchers("/api/v1/token/refresh").permitAll()
                 .antMatchers("/api/v1/verifyAccount").permitAll()
