@@ -4,11 +4,15 @@ import com.Ecommerce.Product.Product;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.mail.Multipart;
 import javax.websocket.server.PathParam;
+import java.io.IOException;
 import java.util.List;
 
 @AllArgsConstructor
@@ -17,8 +21,15 @@ import java.util.List;
 public class ProductImgController {
 
     private ProductImgService productImgService;
+
+    @GetMapping(value = "/images/products/{imageName}",
+            produces = MediaType.IMAGE_JPEG_VALUE)
+    public @ResponseBody byte[] addImgsToProduct(@PathVariable String imageName) throws IOException {
+        return productImgService.getImageByNameFromDesk(imageName);
+    }
+
     @PostMapping(path = "/admin/image/add")
-    public ResponseEntity<?> addImgsToProduct(Authentication authentication, @RequestBody List<ProductImg> productImgs, @PathParam("productId")String productId){
+    public ResponseEntity<?> addImgsToProduct(Authentication authentication, @RequestParam("images") List<MultipartFile> productImgs, @PathParam("productId")String productId) throws IOException {
        return productImgService.addImgsToProduct(authentication,productImgs,productId);
     }
     @PutMapping(path = "/admin/poduct/{productId}/update/img")

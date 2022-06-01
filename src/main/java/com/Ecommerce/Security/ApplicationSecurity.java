@@ -48,9 +48,11 @@ public class ApplicationSecurity extends WebSecurityConfigurerAdapter {
                 .addFilterBefore(new CustomAuthorizationFilter(userRepo), UsernamePasswordAuthenticationFilter.class)
                 .authorizeRequests()
                 .antMatchers("/api/v1/product/**").permitAll()
+                .antMatchers("/images/**").permitAll()
                 .antMatchers("/api/v1/user/signup").permitAll()
                 .antMatchers("/api/v1/token/refresh").permitAll()
                 .antMatchers("/api/v1/verifyAccount").permitAll()
+                .antMatchers("/favicon.ico").permitAll()
                 .antMatchers("/api/v1/user/**").hasAnyAuthority("CUSTOMER","ADMIN")
                 .antMatchers("/api/v1/admin/**").hasAuthority("ADMIN")
                 .anyRequest().authenticated();
