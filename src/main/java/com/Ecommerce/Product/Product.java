@@ -47,6 +47,7 @@ public class Product {
     @JoinColumn(referencedColumnName = "id",name = "categorie_id")
     private Category category;
 
+    @JsonManagedReference
     @OneToMany(mappedBy = "product",fetch = FetchType.LAZY)
     private List<ProductImg> productImgs;
 }
