@@ -19,8 +19,8 @@ public class ProductController {
     }
 
     @GetMapping(path = "/product/categorie/{categorie}")
-    public ResponseEntity<?> getProductsByCat(@PathVariable String categorieName) {
-        return productService.getProductBycategorie(categorieName);
+    public ResponseEntity<?> getProductsByCat(@PathVariable String categorie) {
+        return productService.getProductBycategorie(categorie);
 
     }
     @GetMapping(path = "/product/{id}")

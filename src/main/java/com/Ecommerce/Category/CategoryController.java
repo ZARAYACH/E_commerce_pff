@@ -1,9 +1,11 @@
 package com.Ecommerce.Category;
 
+import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@AllArgsConstructor
 @RequestMapping(path = "/api/v1/admin/category")
 public class CategoryController {
 
