@@ -32,6 +32,10 @@ public class ProductImgController {
     public ResponseEntity<?> addImgsToProduct(Authentication authentication, @RequestParam("images") List<MultipartFile> productImgs, @PathParam("productId")String productId) throws IOException {
        return productImgService.addImgsToProduct(authentication,productImgs,productId);
     }
+    @PostMapping(path = "/admin/image/setPrimary")
+    public ResponseEntity<?> setImagePrimary(Authentication authentication,@RequestBody ProductImg productImg) throws IOException {
+        return productImgService.setImagePrimary(authentication,productImg);
+    }
     @PutMapping(path = "/admin/poduct/{productId}/update/img")
     public ResponseEntity<?> updateProductImg(Authentication authentication,@PathParam("productId")String productId,@RequestBody ProductImg img,@RequestParam(name = "imgId")Long imgId){
        return productImgService.updateProductImg(authentication,productId,img,imgId);
