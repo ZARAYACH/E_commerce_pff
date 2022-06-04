@@ -57,10 +57,13 @@ public class ProductImgService {
                             }else if (Objects.equals(file.getContentType(), "image/svg")|| Objects.equals(file.getContentType(), "image/svg+xml")){
                                 File img = new File(PRODUCT_IMG_LOCATION + "/" +UUID.randomUUID() + ".svg");
                                 productImgs.add(createImg(img, file, product));
+                            }else if (Objects.equals(file.getContentType(), "image/png")){
+                                File img = new File(PRODUCT_IMG_LOCATION + "/" +UUID.randomUUID() + ".png");
+                                productImgs.add(createImg(img, file, product));
                             }
                         } else {
                             Map<String, String> error = new HashMap<>();
-                            error.put("error", "this type of files is uncepptable please add this files types(jpg,jpeg)");
+                            error.put("error", "this type of files is uncepptable please add this files types(jpg,svg,png,jpeg)");
                             return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(error);
                         }
                     }
