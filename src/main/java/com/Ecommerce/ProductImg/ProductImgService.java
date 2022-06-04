@@ -4,18 +4,14 @@ import com.Ecommerce.Product.Product;
 import com.Ecommerce.Product.ProductRepo;
 import com.Ecommerce.User.User;
 import com.Ecommerce.User.UserRepo;
-import lombok.AllArgsConstructor;
 import org.apache.commons.io.IOUtils;
-import org.apache.coyote.Response;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.mail.internet.ContentType;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -36,6 +32,7 @@ public class ProductImgService {
         this.productRepo = productRepo;
         this.userRepo = userRepo;
     }
+
     Path uplaodPath = Paths.get("./images/products");
     private final String PRODUCT_IMG_LOCATION = uplaodPath.toFile().getAbsolutePath();
 
@@ -47,18 +44,18 @@ public class ProductImgService {
                 List<ProductImg> productImgs = new ArrayList<>();
                 if (files.size() > 0) {
                     for (MultipartFile file : files) {
-                        if (Objects.equals(file.getContentType(), "image/jpg") || Objects.equals(file.getContentType(), "image/jpeg") || Objects.equals(file.getContentType(), "image/svg+xml") || Objects.equals(file.getContentType(), "image/svg") ) {
+                        if (Objects.equals(file.getContentType(), "image/jpg") || Objects.equals(file.getContentType(), "image/jpeg") || Objects.equals(file.getContentType(), "image/svg+xml") || Objects.equals(file.getContentType(), "image/svg")) {
                             if (Objects.equals(file.getContentType(), "image/jpg")) {
                                 File img = new File(PRODUCT_IMG_LOCATION + UUID.randomUUID() + ".jpg");
                                 productImgs.add(createImg(img, file, product));
                             } else if (Objects.equals(file.getContentType(), "image/jpeg")) {
-                                File img = new File(PRODUCT_IMG_LOCATION + "/" +UUID.randomUUID() + ".jpeg");
+                                File img = new File(PRODUCT_IMG_LOCATION + "/" + UUID.randomUUID() + ".jpeg");
                                 productImgs.add(createImg(img, file, product));
-                            }else if (Objects.equals(file.getContentType(), "image/svg")|| Objects.equals(file.getContentType(), "image/svg+xml")){
-                                File img = new File(PRODUCT_IMG_LOCATION + "/" +UUID.randomUUID() + ".svg");
+                            } else if (Objects.equals(file.getContentType(), "image/svg") || Objects.equals(file.getContentType(), "image/svg+xml")) {
+                                File img = new File(PRODUCT_IMG_LOCATION + "/" + UUID.randomUUID() + ".svg");
                                 productImgs.add(createImg(img, file, product));
-                            }else if (Objects.equals(file.getContentType(), "image/png")){
-                                File img = new File(PRODUCT_IMG_LOCATION + "/" +UUID.randomUUID() + ".png");
+                            } else if (Objects.equals(file.getContentType(), "image/png")) {
+                                File img = new File(PRODUCT_IMG_LOCATION + "/" + UUID.randomUUID() + ".png");
                                 productImgs.add(createImg(img, file, product));
                             }
                         } else {
@@ -158,5 +155,32 @@ public class ProductImgService {
             }
         }
         return null;
+    }
+
+    public ResponseEntity<?> setImagePrimary(Authentication authentication, ProductImg productImg) {
+        User admin = userRepo.existsByEmail(authentication.getPrincipal().toString());
+        if (admin != null) {
+            ProductImg productImg1 = productImgRepo.findImgById(productImg.getId());
+            if (productImg1 != null) {
+                Product product = productRepo.findProductById(productImg1.getProduct().getId());
+                if (product != null) {
+                    List<ProductImg> productImgs= productImg1.getProduct().getProductImgs();
+                    for (ProductImg productImg2 : productImgs){
+                        productImg2.setPrimaryImg(false);
+                    }
+                    productImgRepo.saveAll(productImgs);
+                    productImg1.setPrimaryImg(true);
+                    productImgRepo.save(productImg1);
+                    return ResponseEntity.ok().build();
+                } else {
+                    return ResponseEntity.status(HttpStatus.NOT_FOUND).contentType(MediaType.APPLICATION_JSON).body("product doesn't exist");
+                }
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).contentType(MediaType.APPLICATION_JSON).body("img doesn't exist");
+
+            }
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 }

@@ -47,6 +47,6 @@ public class Product {
     @JoinColumn(referencedColumnName = "id",name = "categorie_id")
     private Category category;
 
-    @OneToMany(mappedBy = "product")
+    @OneToMany(mappedBy = "product",fetch = FetchType.LAZY)
     private List<ProductImg> productImgs;
 }
