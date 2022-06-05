@@ -7,11 +7,9 @@ import com.Ecommerce.Jwts.JwtsService;
 import com.Ecommerce.Logs.Logs;
 import com.Ecommerce.Logs.LogsRepo;
 import com.Ecommerce.User.UserRepo;
-import com.Ecommerce.User.UserRoles;
 import com.Ecommerce.UserCredentiels.UserCredentialsService;
 import com.Ecommerce.confige.CorsFilter;
 import lombok.AllArgsConstructor;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -20,6 +18,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.access.AccessDeniedHandler;
+import org.springframework.security.web.access.channel.ChannelProcessingFilter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 
@@ -40,7 +39,6 @@ public class ApplicationSecurity extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-
                 .csrf().disable()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -49,6 +47,7 @@ public class ApplicationSecurity extends WebSecurityConfigurerAdapter {
                     .authenticationEntryPoint(this.restAuthenticationEntryPoint)
                 .accessDeniedHandler((AccessDeniedHandler) this.accessDeniedExceptionHandler)
                 .and()
+                .addFilterBefore(new CorsFilter(), ChannelProcessingFilter.class)
                 .addFilter(new CustomAuthenticationFilter(authenticationManager(),jwtsService,logsRepo,userRepo))
                 .addFilterBefore(new CustomAuthorizationFilter(userRepo), UsernamePasswordAuthenticationFilter.class)
                 .authorizeRequests()
