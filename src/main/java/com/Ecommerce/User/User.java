@@ -61,6 +61,7 @@ public class User {
     private UserCredentials userCredentials;
 
     @OneToOne(mappedBy = "user")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JsonBackReference
     private Cart cart;
 

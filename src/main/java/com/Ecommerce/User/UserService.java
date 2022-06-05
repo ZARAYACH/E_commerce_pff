@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.regex.Pattern;
 
 @Service
 @AllArgsConstructor
@@ -79,7 +80,7 @@ public class UserService {
     public ResponseEntity<?> deleteAccount(Authentication authentication) {
         String email = authentication.getPrincipal().toString();
         User user = userRepo.findUserByEmail(email);
-        if (user != null){
+        if (user != null) {
             userRepo.delete(user);
             if (!userRepo.existsById(user.getId())) {
                 return ResponseEntity.ok().body(user);
@@ -88,7 +89,7 @@ public class UserService {
                 error.put("error", "something went wrong please repeat later");
                 return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(error);
             }
-        }else {
+        } else {
             return ResponseEntity.notFound().build();
         }
 
@@ -97,9 +98,9 @@ public class UserService {
     public ResponseEntity<?> getUsers(Authentication authentication) {
         String email = authentication.getPrincipal().toString();
         User admin = userRepo.findUserByEmail(email);
-        if (admin != null){
+        if (admin != null) {
             return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(userRepo.getAllUsers());
-        }else {
+        } else {
             return ResponseEntity.notFound().build();
         }
 
@@ -147,7 +148,7 @@ public class UserService {
             userRepo.delete(toBeDelete);
         } else {
             Map<String, String> error = new HashMap<>();
-            error.put("error", "user" + toBeDel.getId()+ "doesn't exist");
+            error.put("error", "user" + toBeDel.getId() + "doesn't exist");
             return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(error);
         }
         if (userRepo.existsById(toBeDel.getId())) {
@@ -156,19 +157,19 @@ public class UserService {
             return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(error);
         } else {
             Map<String, String> success = new HashMap<>();
-            success.put("success", "the user with id ="+ toBeDel.getId() +" was deleted with success");
+            success.put("success", "the user with id =" + toBeDel.getId() + " was deleted with success");
             return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(success);
         }
     }
 
     //TODO:to be compeleted later on
     public ResponseEntity<?> UserSignUp(User user) {
-        if (userRepo.existsByEmail(user.getEmail())==null && validEmail(user)  ) {
-            if (user.getBirthDate().getYear() < LocalDate.now().getYear() || user.getBirthDate() != null) {
-                if (userRepo.existsByPhoneNumber(user.getPhoneNumber())==null) {
+        if (userRepo.existsByEmail(user.getEmail()) == null && validEmail(user)) {
+            if (user.getBirthDate().getYear() < LocalDate.now().getYear() && user.getBirthDate() != null && user.getBirthDate().getYear() > 1900) {
+                if (userRepo.existsByPhoneNumber(user.getPhoneNumber()) == null && user.getPhoneNumber().length() == 10 && isNumeric(user.getPhoneNumber())) {
                     if (user.getUserCredentials() != null) {
                         if (userCredService.cheekStrongestOfPassword(user.getUserCredentials())) {
-                            String encodedPass =  passwordEncoder.encode(user.getUserCredentials().getPassword());
+                            String encodedPass = passwordEncoder.encode(user.getUserCredentials().getPassword());
                             user.getUserCredentials().setEmail(user.getEmail());
                             user.getUserCredentials().setPassword(encodedPass);
                             user.setActive(false);
@@ -178,41 +179,45 @@ public class UserService {
                             user.setUserCredentials(userCredentials);
                             user.getUserCredentials().setVerficationToken(UUID.randomUUID().toString());
                             userRepo.save(user);
-                            String link = "http://localhost:8081/api/v1/verifyAccount?token="+user.getUserCredentials().getVerficationToken()+"&email="+user.getEmail();
+                            String link = "http://localhost:8081/api/v1/verifyAccount?token=" + user.getUserCredentials().getVerficationToken() + "&email=" + user.getEmail();
 
-                            mailSender.SendHtmlEmail(user.getEmail(),
-                                    "medrassachanuwu@gmail.com",
-                                    "verified your account",
-                                    "<h1>to veified your account</h1" +
-                                            "<p>click <a href="+link+">HERE</a></p>");
+                            Thread newThread = new Thread(() -> {
+                                mailSender.SendHtmlEmail(user.getEmail(),
+                                        "medrassachanuwu@gmail.com",
+                                        "verified your account",
+                                        "<h1>to veified your account</h1>" +
+                                                "<p>click <a href=" + link + ">HERE</a></p>");
+
+                            });
+                            newThread.start();
 
                             Map<String, String> success = new HashMap<>();
-                            success.put("success", "the user with Email  :" +user.getEmail()+ " is successfully signed up");
+                            success.put("success", "you account was successfully created,to complete shopping you have to activate your account");
                             return ResponseEntity.status(HttpStatus.CREATED).contentType(MediaType.APPLICATION_JSON).body(success);
 
-                        }else {
+                        } else {
                             Map<String, String> error = new HashMap<>();
                             error.put("error", "the provided password should contain a number and lower and uper case letter and a charachter and tength betewenn 8 and 50");
                             return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(error);
                         }
-                    }else {
+                    } else {
                         Map<String, String> error = new HashMap<>();
                         error.put("error", "please add a credientiel");
                         return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(error);
                     }
 
-                }else {
+                } else {
                     Map<String, String> error = new HashMap<>();
-                    error.put("error", "this phone number is already exists");
+                    error.put("error", "this phone number is already exists or its invalid number");
                     return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(error);
                 }
-            }else {
+            } else {
                 Map<String, String> error = new HashMap<>();
                 error.put("error", "invalid birth date");
                 return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(error);
             }
 
-        }else {
+        } else {
             Map<String, String> error = new HashMap<>();
             error.put("error", "this email is already exists or it's not respecting email format");
             return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(error);
@@ -222,24 +227,33 @@ public class UserService {
     public ResponseEntity<?> logout(Authentication authentication) {
 
         User user = userRepo.findUserByEmail(authentication.getPrincipal().toString());
-        if (user!=null){
+        if (user != null) {
             user.setLogedIn(false);
             List<Logs> logs = logsRepo.findAllByUserWhereReferechTokenIsNotNull(user);
-            for (Logs log : logs){
+            for (Logs log : logs) {
                 log.setLogoutTime(LocalDateTime.now());
                 log.setRefreshToken(null);
             }
             userRepo.save(user);
             logsRepo.saveAll(logs);
             return ResponseEntity.ok().build();
-        }else {
+        } else {
             return ResponseEntity.notFound().build();
         }
 
     }
+
     private boolean validEmail(User user) {
         String email = user.getEmail();
         var regexPattern = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
         return email.matches(regexPattern);
+    }
+
+    public boolean isNumeric(String strNum) {
+        Pattern pattern = Pattern.compile("-?\\d+(\\.\\d+)?");
+        if (strNum == null) {
+            return false;
+        }
+        return pattern.matcher(strNum).matches();
     }
 }
