@@ -1,0 +1,42 @@
+HELP.md
+target/
+!.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+!images/products/3be35654-ec4d-4856-b3fb-f520b64e8fa2.jpeg
+!images/products/3b635c07-d3f0-4ca7-baf9-3daa651a6924.svg
+!images/products/b72d13cc-c005-42e8-b614-ed9c4bcf2557.svg
+!images/products
+!images/users
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+build/
+!**/src/main/**/build/
+!**/src/test/**/build/
+!**/src/main/**/application.properties
+src/main/resources/application.properties
+images/products/**
+images/users/**
+### VS Code ###
+.vscode/
+*.properties
+
