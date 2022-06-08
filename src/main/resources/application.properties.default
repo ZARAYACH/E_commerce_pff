@@ -22,3 +22,12 @@ spring.servlet.multipart.file-size-threshold=2KB
 spring.servlet.multipart.location=${java.io.tmpdir}
 spring.servlet.multipart.max-file-size=20MB
 spring.servlet.multipart.max-request-size=100MB
+
+server.ssl.key-store-type=PKCS12
+server.ssl.key-store=classpath:keystore/springboot.p12
+server.ssl.key-store-password=sidiomar@2002#yolo
+server.ssl.key-alias=springboot
+server.ssl.enabled=true
+
+trust.store=classpath:keystore/springboot.p12
+trust.store.password=sidiomar@2002#yolo
