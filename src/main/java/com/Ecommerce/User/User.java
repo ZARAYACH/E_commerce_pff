@@ -55,7 +55,7 @@ public class User {
     private String img;
 
 
-    @OneToOne(cascade = CascadeType.REMOVE,fetch = EAGER)
+    @OneToOne(cascade = CascadeType.REMOVE,fetch = LAZY)
     @JoinColumn(name = "userCrendials_id", referencedColumnName = "id")
     @OnDelete(action = OnDeleteAction.CASCADE)
     private UserCredentials userCredentials;

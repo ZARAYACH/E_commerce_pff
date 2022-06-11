@@ -11,8 +11,11 @@ public class ResourceConfig implements WebMvcConfigurer {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         Path uplaodPath = Paths.get("./images/products");
+        Path userImages = Paths.get("./images/users");
         String imgUplaod= uplaodPath.toFile().getAbsolutePath();
+        String userimagess= userImages.toFile().getAbsolutePath();
         registry.addResourceHandler("/images/products/**").addResourceLocations("file:/"+imgUplaod+"/");
+        registry.addResourceHandler("/images/users/**").addResourceLocations("file:/"+userimagess+"/");
         registry.addResourceHandler("/static/**").addResourceLocations("class:/static/");
 
     }

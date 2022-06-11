@@ -2,6 +2,7 @@ package com.Ecommerce.Order;
 
 import com.Ecommerce.OrderItem.OrderItem;
 import com.Ecommerce.User.User;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -33,6 +34,7 @@ public class Order {
     private Set<OrderItem> orderItems;
 
     @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    @JsonBackReference
     private User user;
 
     private LocalDateTime timeStamp;

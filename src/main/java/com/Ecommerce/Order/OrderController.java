@@ -19,6 +19,12 @@ public class OrderController {
     private ResponseEntity<?> makeOrderWholeCart(Authentication authentication,@RequestBody CreditCard card){
         return orderService.makeOrderWholeCart(authentication,card);
     }
+
+    @GetMapping(path = "/user/order/all")
+    private ResponseEntity<?> getAllOrdersForUser(Authentication authentication){
+        return orderService.getAllOrdersForUser(authentication);
+    }
+
     @GetMapping(path = "/admin/order/all")
     public ResponseEntity<?> getAllOrders(Authentication authentication){
         return orderService.getAllOrders(authentication);

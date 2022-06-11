@@ -188,4 +188,15 @@ public class OrderService {
             return ResponseEntity.notFound().build();
         }
     }
+
+    public ResponseEntity<?> getAllOrdersForUser(Authentication authentication) {
+        User user = userRepo.existsByEmail(authentication.getPrincipal().toString());
+        if (user != null){
+            List<Order> orders = user.getOrders();
+            return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(orders);
+        }else {
+            return ResponseEntity.notFound().build();
+        }
+
+    }
 }
