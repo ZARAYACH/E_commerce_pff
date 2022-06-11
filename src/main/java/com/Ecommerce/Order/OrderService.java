@@ -59,6 +59,7 @@ public class OrderService {
                     order.setOrderItems(orderItems);
                     order.setTotalPrice(totalPrice);
                     order.setUser(user);
+                    order.setStatus(OrderStatus.ontheway);
                     order.setTimeStamp(LocalDateTime.now());
                     Order save = orderRepo.save(order);
                     for (OrderItem orderItem : order.getOrderItems()) {
