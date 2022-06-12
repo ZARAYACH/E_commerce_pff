@@ -62,7 +62,7 @@ public class JwtsService {
         String refrechToken = JWT.create()
                 .withSubject(user.getUsername())
                 .withIssuedAt(Date.valueOf(LocalDate.now()))
-                .withExpiresAt(Date.valueOf(LocalDate.now().plusMonths(4)))
+                .withExpiresAt(Date.valueOf(LocalDate.now().plusMonths(3)))
                 .withClaim("roles", user.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()))
                 .withIssuer(request.getRequestURL().toString())
                 .sign(algorithmRefresh);

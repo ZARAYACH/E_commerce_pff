@@ -77,7 +77,7 @@ public class CartItemService {
                 }
                 Map<String, String> error = new HashMap<>();
                 error.put("success", "the items were deleted successfully");
-                return ResponseEntity.status(HttpStatus.FORBIDDEN).contentType(MediaType.APPLICATION_JSON).body(error);
+                return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(error);
 
             } else {
                 Map<String, String> error = new HashMap<>();
@@ -104,7 +104,7 @@ public class CartItemService {
     public int addQuantity(Authentication authentication, CartItem cartItem1) {
         User user = userRepo.findUserByEmail(authentication.getPrincipal().toString());
         if (user != null) {
-            if (cartRepo.existsById(cartItem1.getId())) {
+            if (cartItemRepo.existsById(cartItem1.getId())) {
                 CartItem cartItem = cartItemRepo.findCartItemByUserIdAndCarItemId(user.getId(), cartItem1.getId());
                 if (cartItem != null) {
                     cartItem.setQuantity(cartItem.getQuantity() + 1);
@@ -121,7 +121,7 @@ public class CartItemService {
     public int minusQuantity(Authentication authentication, CartItem cartItem1) {
         User user = userRepo.findUserByEmail(authentication.getPrincipal().toString());
         if (user != null) {
-            if (cartRepo.existsById(cartItem1.getId())) {
+            if (cartItemRepo.existsById(cartItem1.getId())) {
                 CartItem cartItem = cartItemRepo.findCartItemByUserIdAndCarItemId(user.getId(), cartItem1.getId());
                 if (cartItem != null) {
                     if (cartItem.getQuantity() > 1) {
@@ -137,5 +137,34 @@ public class CartItemService {
             }
         }
         return -1;
+    }
+
+    public ResponseEntity<?> deleteItemFromCart(Authentication authentication, Long cartItem) {
+        User user = userRepo.findUserByEmail(authentication.getPrincipal().toString());
+        if (user != null) {
+            Cart cart = user.getCart();
+            if (cart != null) {
+                CartItem cartItem1 = cartItemRepo.findCartItemByUserIdAndCarItemId(user.getId(), cartItem);
+                if (cartItem1!=null){
+                    cartItemRepo.delete(cartItem1);
+                    Map<String, String> error = new HashMap<>();
+                    error.put("success", "the items were deleted successfully");
+                    return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(error);
+                }else {
+                    Map<String, String> error = new HashMap<>();
+                    error.put("error", "item do not exists in you cart");
+                    return ResponseEntity.status(HttpStatus.FORBIDDEN).contentType(MediaType.APPLICATION_JSON).body(error);
+                }
+            } else {
+                Map<String, String> error = new HashMap<>();
+                error.put("error", "please go activate your account");
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).contentType(MediaType.APPLICATION_JSON).body(error);
+            }
+        } else {
+            Map<String, String> error = new HashMap<>();
+            error.put("error", "user doesn't exists");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).contentType(MediaType.APPLICATION_JSON).body(error);
+
+        }
     }
 }
