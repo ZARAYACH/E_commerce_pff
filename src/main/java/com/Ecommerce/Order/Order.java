@@ -8,6 +8,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
@@ -32,6 +34,7 @@ public class Order {
     private OrderStatus status;
 
     @OneToMany(mappedBy = "order")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Set<OrderItem> orderItems;
 
     @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
