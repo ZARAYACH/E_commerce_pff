@@ -69,7 +69,7 @@ public class OrderService {
                     cartItemRepo.deleteAll(cart.getCartItems());
                     Map<String, String> error = new HashMap<>();
                     error.put("success", "the purchase done successfully");
-                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).contentType(MediaType.APPLICATION_JSON).body(error);
+                    return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(error);
 
                 } else {
                     Map<String, String> error = new HashMap<>();
