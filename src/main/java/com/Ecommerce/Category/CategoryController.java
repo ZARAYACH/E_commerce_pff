@@ -11,8 +11,7 @@ public class CategoryController {
 
     private CategoryService categoryService;
 
-    @CrossOrigin(origins = "http://localhost:3000")
-    @GetMapping(path = "/all")
+        @GetMapping(path = "/all")
     public ResponseEntity<?> getAllCategory(){
         return categoryService.getAllCategory();
     }
