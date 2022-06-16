@@ -18,6 +18,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 
+import javax.mail.internet.ContentType;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
@@ -95,18 +96,18 @@ public class JwtsService {
                    new ObjectMapper().writeValue(response.getOutputStream(), tokens);
                }else{
                    response.setStatus(FORBIDDEN.value());
-                   response.setContentType(APPLICATION_JSON_VALUE);
-                   HashMap<String,String> error = new HashMap<>();
+                   Map<String, String> error = new HashMap<>();
                    error.put("error","this refresh token is already been destroyed");
-                   new ObjectMapper().writeValue(response.getOutputStream(),error.toString());
+                   response.setContentType(APPLICATION_JSON_VALUE);
+                   new ObjectMapper().writeValue(response.getOutputStream(),error);
                }
             }catch (Exception e){
                 response.setStatus(FORBIDDEN.value());
                 response.setContentType(APPLICATION_JSON_VALUE);
-                HashMap<String,String> error = new HashMap<>();
+                Map<String,String> error = new HashMap<>();
                 error.put("error",e.getMessage());
                 System.out.println(e.getMessage());
-                new ObjectMapper().writeValue(response.getOutputStream(),error.toString());
+                new ObjectMapper().writeValue(response.getOutputStream(),error);
                 e.printStackTrace();
 
             }

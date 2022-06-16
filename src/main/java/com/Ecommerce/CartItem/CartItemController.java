@@ -29,7 +29,7 @@ public class CartItemController {
     public int minusQuantity(Authentication authentication,@RequestBody CartItem cartItem){
         return cartItemService.minusQuantity(authentication,cartItem);
     }
-    @DeleteMapping(path = "/ user/cart/item/delete")
+    @DeleteMapping(path = "/user/cart/item/delete")
     public ResponseEntity<?> deleteItemFromCart(Authentication authentication,@RequestParam(name = "id") Long cartItem){
         return cartItemService.deleteItemFromCart(authentication,cartItem);
     }
