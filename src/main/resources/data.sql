@@ -12,10 +12,10 @@ insert IGNORE into role(name) values  ("CUSTOMER");
 INSERT IGNORE INTO ecommerce_pff.user_roles (user_id, role_id) VALUES (1, 2);
 INSERT IGNORE INTO ecommerce_pff.user_roles (user_id, role_id) VALUES (1, 1);
 
-insert ignore into category(id ,name) VALUES (1,'tecknologie');
+insert ignore into category(name) VALUES ('tecknologie');
+insert ignore into category(name) VALUES ('computers');
 
 INSERT ignore INTO ecommerce_pff.product (id, description, name, price, quantity_to_sell, categorie_id) VALUES ('aa4e43ab-a6e9-4506-aa8c-aace21d3f78f', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Varius praesent vel purus vestibulum adipiscing donec dignissim tincidunt id. Adipiscing eget lectus sagittis egestas.  ', 'MacBook Air', 600, 0, 1);
-INSERT ignore ecommerce_pff.product (id, description, name, price, quantity_to_sell, categorie_id) VALUES ('ba3e610c-8b64-4cf9-939a-d8314d41ae16', 'loreme lomerelm,mla', 'sabon', 121, 0, null);
 INSERT ignore ecommerce_pff.product (id, description, name, price, quantity_to_sell, categorie_id) VALUES ('d342e1e5-0a71-489e-b2bb-b093a857a966', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Varius praesent vel purus vestibulum adipiscing donec dignissim tincidunt id. Adipiscing eget lectus sagittis egestas.  ', 'the magic of iphone 13', 600, 0, 1);
 
 INSERT ignore INTO ecommerce_pff.product_img (id, is_primary_img, path, product_id) VALUES (15, false, '/images/products/3be35654-ec4d-4856-b3fb-f520b64e8fa2.jpeg', 'ba3e610c-8b64-4cf9-939a-d8314d41ae16');

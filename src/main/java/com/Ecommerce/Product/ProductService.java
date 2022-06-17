@@ -65,7 +65,7 @@ public class ProductService {
 
     public ResponseEntity<?> deleteProduct(Authentication authentication, String id) {
         if (productRepo.existsById(id)){
-            productRepo.deleteById(id);
+            productRepo.delete(productRepo.findProductById(id));
             if(!productRepo.existsById(id)){
                 Map<String, String> succes = new HashMap<>();
                 succes.put("success", "the product With id"+id+"is deleted with succes");

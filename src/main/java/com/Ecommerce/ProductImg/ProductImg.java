@@ -27,6 +27,6 @@ public class ProductImg {
 
     @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="product_id")
+    @JoinColumn(referencedColumnName = "id",name="product_id")
     private Product product;
 }
