@@ -44,7 +44,7 @@ public class ProductImgService {
                 List<ProductImg> productImgs = new ArrayList<>();
                 if (files.size() > 0) {
                     for (MultipartFile file : files) {
-                        if (Objects.equals(file.getContentType(), "image/jpg") || Objects.equals(file.getContentType(), "image/jpeg") || Objects.equals(file.getContentType(), "image/svg+xml") || Objects.equals(file.getContentType(), "image/svg")) {
+                        if (Objects.equals(file.getContentType(), "image/jpg") || Objects.equals(file.getContentType(), "image/jpeg") || Objects.equals(file.getContentType(), "image/svg+xml") || Objects.equals(file.getContentType(), "image/svg") || Objects.equals(file.getContentType(), "image/png")) {
                             if (Objects.equals(file.getContentType(), "image/jpg")) {
                                 File img = new File(PRODUCT_IMG_LOCATION + UUID.randomUUID() + ".jpg");
                                 productImgs.add(createImg(img, file, product));
@@ -137,6 +137,7 @@ public class ProductImgService {
             outputStream.close();
             ProductImg productImg = new ProductImg();
             productImg.setProduct(product);
+            productImg.setPrimaryImg(true);
             String absolutePath = file.getAbsolutePath();
             productImg.setPath(absolutePath.substring(absolutePath.indexOf("\\images")).replace("\\", "/"));
             return productImgRepo.save(productImg);
