@@ -59,6 +59,7 @@ public class OrderService {
                     order.setOrderItems(orderItems);
                     order.setTotalPrice(totalPrice);
                     order.setUser(user);
+                    order.setStatus(OrderStatus.ontheway);
                     order.setTimeStamp(LocalDateTime.now());
                     Order save = orderRepo.save(order);
                     for (OrderItem orderItem : order.getOrderItems()) {
@@ -68,7 +69,7 @@ public class OrderService {
                     cartItemRepo.deleteAll(cart.getCartItems());
                     Map<String, String> error = new HashMap<>();
                     error.put("success", "the purchase done successfully");
-                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).contentType(MediaType.APPLICATION_JSON).body(error);
+                    return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(error);
 
                 } else {
                     Map<String, String> error = new HashMap<>();
@@ -187,5 +188,16 @@ public class OrderService {
         }else {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    public ResponseEntity<?> getAllOrdersForUser(Authentication authentication) {
+        User user = userRepo.existsByEmail(authentication.getPrincipal().toString());
+        if (user != null){
+            List<Order> orders = user.getOrders();
+            return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(orders);
+        }else {
+            return ResponseEntity.notFound().build();
+        }
+
     }
 }

@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface OrderRepo extends JpaRepository<Order,Long> {
+public interface OrderRepo extends JpaRepository<Order,String> {
 
     @Query("select o from orders o where o.user.id = :userId")
     List<Order> findOrdersByUserID(Long userId);
@@ -20,7 +20,7 @@ public interface OrderRepo extends JpaRepository<Order,Long> {
     List<Order> findOrdersByUserIdAndStatus(Long userId, String status);
 
     @Query("select o from orders o where o.id = :id ")
-    Order findOrdersByID(int id);
+    Order findOrdersByID(String id);
 
     @Query("delete from orders o where o.user.id = :userId")
     void deleteAllByUserId(@Param("userId") Long userId);

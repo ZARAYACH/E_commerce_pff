@@ -48,6 +48,7 @@ public class Product {
     private Category category;
 
     @JsonManagedReference
-    @OneToMany(mappedBy = "product",fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "product",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private List<ProductImg> productImgs;
 }

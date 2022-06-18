@@ -2,6 +2,7 @@ package com.Ecommerce.OrderItem;
 
 import com.Ecommerce.Order.Order;
 import com.Ecommerce.Product.Product;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -32,6 +33,7 @@ public class OrderItem {
     private Product product;
 
     @ManyToOne(cascade = CascadeType.ALL)
+    @JsonBackReference
     @JoinColumn(name = "order_id",referencedColumnName = "id",nullable = false)
     private Order order;
 

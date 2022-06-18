@@ -19,10 +19,13 @@ import org.springframework.stereotype.Component;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+import java.sql.Date;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -80,6 +83,18 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
         log.setUserAgent(request.getHeader("User-Agent") );
         logsRepo.save(log);
         userRepo.save(appUser);
+        Cookie access_token_cookie = new Cookie("access_token",access_token);
+        Cookie refresh_token_cookie = new Cookie("refresh_token",refresh_token);
+
+        access_token_cookie.setMaxAge(60*60*24*60);
+        refresh_token_cookie.setPath("/");
+
+
+        access_token_cookie.setMaxAge(900);
+        access_token_cookie.setPath("/");
+
+        response.addCookie(refresh_token_cookie);
+        response.addCookie(access_token_cookie);
         Map<String, String> tokens = new HashMap<>();
         tokens.put("access_token", access_token);
         tokens.put("refresh_token", refresh_token);
